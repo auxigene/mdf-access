@@ -1,5 +1,6 @@
 *
 !excel/
+!excel/*
 !private/
 !public/
 !.gitignore
