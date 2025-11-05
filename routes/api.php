@@ -15,4 +15,6 @@ use App\Http\Controllers\Api\ExcelUpdateController;
 */
 
 // Route pour mettre à jour un fichier Excel avec les données Kizeo
-Route::post('/excel/update', [ExcelUpdateController::class, 'update']);
+// Requiert une clé API de type 'excel_update' avec le niveau d'accès 'write'
+Route::post('/excel/update', [ExcelUpdateController::class, 'update'])
+    ->middleware('api.key:excel_update,write');
