@@ -76,4 +76,36 @@ class ExcelUpdateController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Télécharge le fichier Excel mis à jour
+     */
+    public function download($fileName = 'template.xlsx')
+    {
+        try {
+            // Chemin complet du fichier dans storage
+            $filePath = storage_path('app/excel/' . $fileName);
+
+            // Vérifier si le fichier existe
+            if (!file_exists($filePath)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Le fichier Excel '$fileName' n'existe pas dans storage/app/excel/",
+                    'path' => $filePath
+                ], 404);
+            }
+
+            // Retourner le fichier en téléchargement
+            return response()->download($filePath, $fileName, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors du téléchargement du fichier Excel',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

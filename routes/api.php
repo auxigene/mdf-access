@@ -18,3 +18,8 @@ use App\Http\Controllers\Api\ExcelUpdateController;
 // Requiert une clé API de type 'excel_update' avec le niveau d'accès 'write'
 Route::post('/excel/update', [ExcelUpdateController::class, 'update'])
     ->middleware('api.key:excel_update,write');
+
+// Route pour télécharger le fichier Excel mis à jour
+// Requiert une clé API de type 'excel_update' avec le niveau d'accès 'read'
+Route::get('/excel/download/{fileName?}', [ExcelUpdateController::class, 'download'])
+    ->middleware('api.key:excel_update,read');
