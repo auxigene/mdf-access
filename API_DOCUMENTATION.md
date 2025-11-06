@@ -45,7 +45,10 @@ POST /api/excel/update
 ```
 Content-Type: application/json
 Accept: application/json
+X-API-Key: votre-cle-api
 ```
+
+**Important** : Une clé API valide est maintenant **requise** pour utiliser cette API. Voir la section "Authentification" ci-dessous.
 
 ### Corps de la requête
 
@@ -77,6 +80,7 @@ La requête doit contenir un objet JSON avec la structure suivante :
 curl -X POST http://localhost:8000/api/excel/update \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
+  -H "X-API-Key: votre-cle-api" \
   -d '{
     "fichier_excel": "template.xlsx",
     "data": [
@@ -121,7 +125,8 @@ fetch('http://localhost:8000/api/excel/update', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'X-API-Key': 'votre-cle-api'
   },
   body: JSON.stringify(data)
 })
@@ -129,6 +134,94 @@ fetch('http://localhost:8000/api/excel/update', {
 .then(data => console.log(data))
 .catch(error => console.error('Erreur:', error));
 ```
+
+## Authentification
+
+Cette API utilise un système d'authentification par clé API. Chaque requête doit inclure une clé API valide.
+
+### Obtenir une clé API
+
+Les clés API sont créées par les administrateurs. Contactez votre administrateur système pour obtenir une clé.
+
+### Utiliser la clé API
+
+La clé API peut être fournie de deux façons :
+
+1. **Via le header HTTP** (recommandé) :
+```bash
+X-API-Key: votre-cle-api-en-clair
+```
+
+2. **Via un paramètre de query** :
+```bash
+?api_key=votre-cle-api-en-clair
+```
+
+### Caractéristiques de sécurité
+
+- La clé API doit être de type `excel_update`
+- La clé API doit avoir le niveau d'accès `write` ou supérieur
+- Les clés peuvent avoir une date d'expiration
+- Les clés peuvent être désactivées par un administrateur
+- Chaque utilisation de la clé est enregistrée
+
+### Erreurs d'authentification
+
+#### Clé API manquante (401)
+
+```json
+{
+  "error": "API key is missing",
+  "message": "Vous devez fournir une clé API via le header X-API-Key ou le paramètre api_key"
+}
+```
+
+#### Clé API invalide (401)
+
+```json
+{
+  "error": "Invalid API key",
+  "message": "La clé API fournie est invalide"
+}
+```
+
+#### Clé API désactivée (401)
+
+```json
+{
+  "error": "Invalid API key",
+  "message": "La clé API est désactivée"
+}
+```
+
+#### Clé API expirée (401)
+
+```json
+{
+  "error": "Invalid API key",
+  "message": "La clé API a expiré"
+}
+```
+
+#### Type d'API non autorisé (403)
+
+```json
+{
+  "error": "Unauthorized API type",
+  "message": "Cette clé API n'a pas accès au type d'API: excel_update"
+}
+```
+
+#### Niveau d'accès insuffisant (403)
+
+```json
+{
+  "error": "Insufficient access level",
+  "message": "Cette clé API ne dispose pas du niveau d'accès requis: write"
+}
+```
+
+Pour plus d'informations sur la gestion des clés API, consultez [API_KEY_DOCUMENTATION.md](./API_KEY_DOCUMENTATION.md).
 
 ### Réponses
 
@@ -236,10 +329,16 @@ L'API sera accessible sur `http://localhost:8000`
 
 ## Sécurité
 
-Pour une utilisation en production, considérez :
+Cette API est maintenant sécurisée avec un système d'authentification par clé API. Pour une utilisation en production, considérez également :
 
-- Ajouter une authentification (Laravel Sanctum, Passport, etc.)
+- ✅ Authentification par clé API (implémenté)
+- ✅ Contrôle des types d'API et niveaux d'accès (implémenté)
+- ✅ Tracking de l'utilisation des clés (implémenté)
+- Utiliser HTTPS en production
 - Valider les permissions d'accès aux fichiers
 - Limiter la taille des requêtes
 - Ajouter du rate limiting
 - Sauvegarder les fichiers Excel avant modification
+- Implémenter un système de logs d'audit
+
+Pour la gestion complète des clés API, consultez [API_KEY_DOCUMENTATION.md](./API_KEY_DOCUMENTATION.md).
