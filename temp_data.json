@@ -1,0 +1,17 @@
+{
+    "fichier_excel": "template.xlsx",
+    "data": [
+      {
+        "colonne_excel": "A",
+        "champ_kizeo": "ai_zone_8c4e183b",
+        "valeur": "marrakech",
+        "rang": 653
+      },
+      {
+        "colonne_excel": "B",
+        "champ_kizeo": "ai_code_site_4728e766",
+        "valeur": "MNB-1011",
+        "rang": 653
+      }
+    ]
+  }

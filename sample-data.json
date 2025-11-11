@@ -1,0 +1,172 @@
+{
+  "data": [
+    {
+      "colonne_excel": "A",
+      "champ_kizeo": "ai_zone_8c4e183b",
+      "valeur": "marrakech",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "B",
+      "champ_kizeo": "ai_code_site_4728e766",
+      "valeur": "MNB-1011",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "G",
+      "champ_kizeo": "ai_responsable__b75c1535",
+      "valeur": "Amine chayaoui",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "I",
+      "champ_kizeo": "statut_installation",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "J",
+      "champ_kizeo": "statut_installation16",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "K",
+      "champ_kizeo": "n_serie16",
+      "valeur": null,
+      "rang": 653
+    },
+    {
+      "colonne_excel": "L",
+      "champ_kizeo": "statut_installation1",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "M",
+      "champ_kizeo": "statut_installation2",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "N",
+      "champ_kizeo": "statut_installation3",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "O",
+      "champ_kizeo": "statut_installation4",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "Q",
+      "champ_kizeo": "statut_installation5",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "R",
+      "champ_kizeo": "n_serie5",
+      "valeur": "BF06FA3PAGC5AB7",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "S",
+      "champ_kizeo": "statut_installation6",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "T",
+      "champ_kizeo": "n_serie6",
+      "valeur": null,
+      "rang": 653
+    },
+    {
+      "colonne_excel": "V",
+      "champ_kizeo": "statut_installation7",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "W",
+      "champ_kizeo": "statut_installation8",
+      "valeur": "N/A",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "X",
+      "champ_kizeo": "statut_installation9",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "Y",
+      "champ_kizeo": "statut_installation10",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "Z",
+      "champ_kizeo": "statut_installation11",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AA",
+      "champ_kizeo": "statut_installation12",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AB",
+      "champ_kizeo": "statut_installation13",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AC",
+      "champ_kizeo": "statut_installation14",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AD",
+      "champ_kizeo": "statut_installation17",
+      "valeur": "Installé",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AE",
+      "champ_kizeo": "configuration_ip",
+      "valeur": "OK",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AF",
+      "champ_kizeo": "test_camera_localement",
+      "valeur": "OK",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AG",
+      "champ_kizeo": "type_supervision",
+      "valeur": "IP",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AH",
+      "champ_kizeo": "test_ping_routage",
+      "valeur": "OK",
+      "rang": 653
+    },
+    {
+      "colonne_excel": "AI",
+      "champ_kizeo": "etat_de_supervision",
+      "valeur": "OK",
+      "rang": 653
+    }
+  ]
+}
