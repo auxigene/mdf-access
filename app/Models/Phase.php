@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 class Phase extends Model
 {
@@ -14,6 +15,9 @@ class Phase extends Model
 
     protected $fillable = [
         'project_id',
+        'phase_template_id',    // 🆕 Référence au template utilisé
+        'parent_phase_id',      // 🆕 Hiérarchie de phases
+        'level',                // 🆕 Niveau hiérarchique
         'name',
         'description',
         'sequence',
@@ -27,6 +31,7 @@ class Phase extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'sequence' => 'integer',
+        'level' => 'integer',
         'completion_percentage' => 'integer',
     ];
 
@@ -40,6 +45,38 @@ class Phase extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    // ===================================
+    // RELATIONS - Template
+    // ===================================
+
+    /**
+     * Template de phase utilisé pour créer cette phase
+     */
+    public function template()
+    {
+        return $this->belongsTo(PhaseTemplate::class, 'phase_template_id');
+    }
+
+    // ===================================
+    // RELATIONS - Hiérarchie
+    // ===================================
+
+    /**
+     * Phase parente (pour sous-phases)
+     */
+    public function parentPhase()
+    {
+        return $this->belongsTo(Phase::class, 'parent_phase_id');
+    }
+
+    /**
+     * Sous-phases (phases enfants)
+     */
+    public function childPhases()
+    {
+        return $this->hasMany(Phase::class, 'parent_phase_id')->orderBy('sequence');
     }
 
     // ===================================
@@ -76,6 +113,50 @@ class Phase extends Model
     public function milestones()
     {
         return $this->hasMany(Milestone::class);
+    }
+
+    // ===================================
+    // SCOPES - Hiérarchie
+    // ===================================
+
+    /**
+     * Filtrer les phases racines uniquement (pas de parent)
+     */
+    public function scopeRootPhases($query)
+    {
+        return $query->whereNull('parent_phase_id');
+    }
+
+    /**
+     * Filtrer les sous-phases uniquement (ont un parent)
+     */
+    public function scopeSubPhases($query)
+    {
+        return $query->whereNotNull('parent_phase_id');
+    }
+
+    /**
+     * Filtrer par niveau hiérarchique
+     */
+    public function scopeLevel($query, int $level)
+    {
+        return $query->where('level', $level);
+    }
+
+    /**
+     * Filtrer les phases créées depuis un template
+     */
+    public function scopeFromTemplate($query)
+    {
+        return $query->whereNotNull('phase_template_id');
+    }
+
+    /**
+     * Filtrer les phases custom (sans template)
+     */
+    public function scopeCustomPhases($query)
+    {
+        return $query->whereNull('phase_template_id');
     }
 
     // ===================================
@@ -132,6 +213,114 @@ class Phase extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sequence');
+    }
+
+    // ===================================
+    // HELPERS - Hiérarchie
+    // ===================================
+
+    /**
+     * Vérifier si c'est une phase racine (pas de parent)
+     */
+    public function isRoot(): bool
+    {
+        return is_null($this->parent_phase_id);
+    }
+
+    /**
+     * Vérifier si c'est une sous-phase (a un parent)
+     */
+    public function isSubPhase(): bool
+    {
+        return !is_null($this->parent_phase_id);
+    }
+
+    /**
+     * Vérifier si la phase a des sous-phases
+     */
+    public function hasChildren(): bool
+    {
+        return $this->childPhases()->exists();
+    }
+
+    /**
+     * Vérifier si c'est une feuille (pas de sous-phases)
+     */
+    public function isLeaf(): bool
+    {
+        return !$this->hasChildren();
+    }
+
+    /**
+     * Obtenir tous les ancêtres (parent, grand-parent, etc.)
+     */
+    public function getAncestors(): Collection
+    {
+        $ancestors = collect();
+        $current = $this;
+
+        while ($current->parentPhase) {
+            $ancestors->push($current->parentPhase);
+            $current = $current->parentPhase;
+        }
+
+        return $ancestors->reverse();
+    }
+
+    /**
+     * Obtenir tous les descendants (enfants, petits-enfants, etc.)
+     */
+    public function getDescendants(): Collection
+    {
+        $descendants = collect();
+
+        foreach ($this->childPhases as $child) {
+            $descendants->push($child);
+            $descendants = $descendants->merge($child->getDescendants());
+        }
+
+        return $descendants;
+    }
+
+    /**
+     * Obtenir la phase racine (ancêtre le plus haut)
+     */
+    public function getRootPhase(): Phase
+    {
+        $current = $this;
+
+        while ($current->parentPhase) {
+            $current = $current->parentPhase;
+        }
+
+        return $current;
+    }
+
+    /**
+     * Obtenir le nom complet avec hiérarchie
+     * Ex: "Exécution > Premier Passage Sites > Zone Nord"
+     */
+    public function getFullName(): string
+    {
+        $ancestors = $this->getAncestors();
+        $names = $ancestors->pluck('name')->push($this->name);
+        return $names->implode(' > ');
+    }
+
+    /**
+     * Vérifier si cette phase a été créée depuis un template
+     */
+    public function isFromTemplate(): bool
+    {
+        return !is_null($this->phase_template_id);
+    }
+
+    /**
+     * Vérifier si c'est une phase custom (créée manuellement)
+     */
+    public function isCustomPhase(): bool
+    {
+        return is_null($this->phase_template_id);
     }
 
     // ===================================
@@ -264,12 +453,50 @@ class Phase extends Model
     }
 
     /**
+     * Calculer la progression incluant les sous-phases
+     * Si la phase a des sous-phases, la progression est la moyenne pondérée des sous-phases
+     * Sinon, calcul basé sur les tâches
+     */
+    public function calculateProgressFromTasksAndSubPhases(): int
+    {
+        // Si a des sous-phases, calculer depuis les sous-phases
+        if ($this->hasChildren()) {
+            $subPhases = $this->childPhases;
+
+            if ($subPhases->isEmpty()) {
+                return $this->completion_percentage;
+            }
+
+            // Moyenne pondérée des sous-phases
+            $avgProgress = $subPhases->avg('completion_percentage');
+            return (int) round($avgProgress);
+        }
+
+        // Sinon, calculer depuis les tâches (logique existante)
+        return $this->calculateProgressFromTasks();
+    }
+
+    /**
      * Mettre à jour le pourcentage de complétion automatiquement
      */
     public function updateCompletionPercentage(): void
     {
         $this->completion_percentage = $this->calculateProgressFromTasks();
         $this->save();
+    }
+
+    /**
+     * Mettre à jour le pourcentage de complétion incluant sous-phases
+     */
+    public function updateCompletionPercentageWithSubPhases(): void
+    {
+        $this->completion_percentage = $this->calculateProgressFromTasksAndSubPhases();
+        $this->save();
+
+        // Mettre à jour récursivement le parent si existe
+        if ($this->parentPhase) {
+            $this->parentPhase->updateCompletionPercentageWithSubPhases();
+        }
     }
 
     // ===================================
@@ -349,4 +576,21 @@ class Phase extends Model
     {
         return $this->milestones()->count();
     }
+
+    /**
+     * Compter le nombre de sous-phases directes
+     */
+    public function getChildPhasesCount(): int
+    {
+        return $this->childPhases()->count();
+    }
+
+    /**
+     * Compter le nombre total de descendants
+     */
+    public function getDescendantsCount(): int
+    {
+        return $this->getDescendants()->count();
+    }
 }
+
