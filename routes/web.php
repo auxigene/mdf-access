@@ -1,71 +1,53 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ExcelUpdateController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\PasswordResetController;
-use App\Http\Controllers\Auth\EmailVerificationController;
-use App\Http\Controllers\Auth\TwoFactorAuthController;
+use Illuminate\Support\Facades\Route;
 
-// Public routes
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+| Route Organization:
+| - routes/web.php      : Public routes and route file loader
+| - routes/auth.php     : Authentication routes (login, register, password reset, 2FA)
+| - routes/dashboard.php: Dashboard and user-authenticated routes
+| - routes/admin.php    : Admin panel routes (system admin only)
+| - routes/api.php      : API routes (API key authentication)
+|
+*/
+
+// ===================================
+// Public Routes
+// ===================================
+
+// Homepage
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
-// Route pour afficher la page de téléchargement
+// Download page
 Route::get('/download', function () {
     return view('download');
 })->name('download.page');
 
-// Route web pour télécharger le fichier Excel (sans authentification pour faciliter l'accès)
+// Public Excel download (no authentication required for easy access)
 Route::get('/excel/download/{fileName?}', [ExcelUpdateController::class, 'download'])
     ->name('excel.download');
 
-// Authentication routes (guest only)
-Route::middleware('guest')->group(function () {
-    // Login
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+// ===================================
+// Load Modular Route Files
+// ===================================
 
-    // Register
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
+// Authentication routes (login, register, password reset, email verification, 2FA)
+require __DIR__.'/auth.php';
 
-    // Password Reset
-    Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+// Dashboard and user routes (requires auth + verified)
+require __DIR__.'/dashboard.php';
 
-    // 2FA Verification (special case - user is not fully authenticated yet)
-    Route::get('/2fa/verify', [TwoFactorAuthController::class, 'showVerifyForm'])->name('2fa.verify');
-    Route::post('/2fa/verify', [TwoFactorAuthController::class, 'verify']);
-});
-
-// Authenticated routes
-Route::middleware('auth')->group(function () {
-    // Logout
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-    // Email Verification
-    Route::get('/email/verify', [EmailVerificationController::class, 'notice'])->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
-    Route::post('/email/resend', [EmailVerificationController::class, 'resend'])
-        ->middleware('throttle:6,1')
-        ->name('verification.resend');
-
-    // Dashboard (requires verified email)
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware('verified')->name('dashboard');
-
-    // Two-Factor Authentication Setup (requires verified email)
-    Route::middleware('verified')->group(function () {
-        Route::get('/2fa/setup', [TwoFactorAuthController::class, 'showSetupForm'])->name('2fa.setup');
-        Route::post('/2fa/enable', [TwoFactorAuthController::class, 'enable'])->name('2fa.enable');
-        Route::post('/2fa/disable', [TwoFactorAuthController::class, 'disable'])->name('2fa.disable');
-    });
-});
+// Admin routes (requires auth + verified + system admin)
+require __DIR__.'/admin.php';
