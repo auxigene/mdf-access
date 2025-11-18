@@ -1,17 +1,53 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ExcelUpdateController;
+use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+| Route Organization:
+| - routes/web.php      : Public routes and route file loader
+| - routes/auth.php     : Authentication routes (login, register, password reset, 2FA)
+| - routes/dashboard.php: Dashboard and user-authenticated routes
+| - routes/admin.php    : Admin panel routes (system admin only)
+| - routes/api.php      : API routes (API key authentication)
+|
+*/
+
+// ===================================
+// Public Routes
+// ===================================
+
+// Homepage
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
-// Route pour afficher la page de téléchargement
+// Download page
 Route::get('/download', function () {
     return view('download');
 })->name('download.page');
 
-// Route web pour télécharger le fichier Excel (sans authentification pour faciliter l'accès)
+// Public Excel download (no authentication required for easy access)
 Route::get('/excel/download/{fileName?}', [ExcelUpdateController::class, 'download'])
     ->name('excel.download');
+
+// ===================================
+// Load Modular Route Files
+// ===================================
+
+// Authentication routes (login, register, password reset, email verification, 2FA)
+require __DIR__.'/auth.php';
+
+// Dashboard and user routes (requires auth + verified)
+require __DIR__.'/dashboard.php';
+
+// Admin routes (requires auth + verified + system admin)
+require __DIR__.'/admin.php';

@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'api.key' => \App\Http\Middleware\AuthenticateApiKey::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'admin' => \App\Http\Middleware\EnsureUserIsSystemAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
