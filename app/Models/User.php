@@ -118,57 +118,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Vérifier si l'utilisateur appartient à une organisation interne (SAMSIC)
-     *
-     * @return bool True si l'organisation est marquée comme interne
-     */
-    public function isInternal(): bool
-    {
-        return $this->organization?->is_internal === true;
-    }
-
-    /**
-     * Vérifier si l'utilisateur est un client (organization qui a des projets comme sponsor)
-     * Note: Avec l'architecture contextuelle, une org peut être cliente sur certains projets
-     * Cette méthode vérifie si l'org a AU MOINS UN projet en tant que sponsor
-     *
-     * @return bool True si l'organisation a au moins un projet en tant que sponsor
-     */
-    public function isClient(): bool
-    {
-        if (!$this->organization_id) {
-            return false;
-        }
-
-        // Vérifier si l'organisation a des projets où elle est sponsor
-        return \DB::table('project_organizations')
-            ->where('organization_id', $this->organization_id)
-            ->where('role', 'sponsor')
-            ->where('status', 'active')
-            ->exists();
-    }
-
-    /**
-     * Vérifier si l'utilisateur est un partenaire (organization qui participe à des projets)
-     * Note: Avec l'architecture contextuelle, cette méthode vérifie si l'org participe
-     * à des projets sans être l'organisation interne
-     *
-     * @return bool True si l'organisation participe à des projets et n'est pas interne
-     */
-    public function isPartner(): bool
-    {
-        if (!$this->organization_id || $this->isInternal()) {
-            return false;
-        }
-
-        // Vérifier si l'organisation participe à des projets (n'importe quel rôle)
-        return \DB::table('project_organizations')
-            ->where('organization_id', $this->organization_id)
-            ->where('status', 'active')
-            ->exists();
-    }
-
-    /**
      * Vérifier si l'organisation de l'utilisateur est cliente pour un projet donné
      *
      * @param int $projectId ID du projet

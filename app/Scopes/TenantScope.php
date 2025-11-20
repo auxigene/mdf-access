@@ -12,6 +12,10 @@ class TenantScope implements Scope
     /**
      * Appliquer le scope à une query Eloquent
      *
+     * Architecture Multi-Tenant Pure :
+     * - System Admin (is_system_admin) : bypass complet
+     * - Toutes les autres organisations : filtrées sur leurs participations
+     *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return void
@@ -25,28 +29,27 @@ class TenantScope implements Scope
             return;
         }
 
-        // System Admin : bypass complet (voit tout)
+        // System Admin : SEUL cas de bypass
+        // Si SAMSIC ou toute autre organisation veut tout voir,
+        // les users doivent être System Admin OU participer à tous les projets
         if ($user->isSystemAdmin()) {
             return;
         }
 
-        // Internal (SAMSIC) : bypass complet (voit tout)
-        if ($user->isInternal()) {
-            return;
-        }
-
-        // Pour toutes les autres organisations : filtrer sur participations
-        // Note: Avec l'architecture contextuelle, une org peut avoir plusieurs rôles
-        // donc on filtre simplement sur toutes les participations actives
+        // TOUTES les organisations (y compris SAMSIC) : filtrées sur participations
+        // C'est l'essence du multi-tenant : chaque organisation ne voit que ce qui la concerne
         $this->applyParticipationFilter($builder, $user);
     }
 
     /**
-     * Appliquer le filtre basé sur les participations (architecture contextuelle)
+     * Appliquer le filtre basé sur les participations (multi-tenant pur)
      *
      * Filtre : Projets où l'organisation participe (via project_organizations)
-     * Note : Avec l'architecture contextuelle, on ne distingue plus Client/Partner
-     *        Une organisation voit tous les projets où elle participe, quel que soit son rôle
+     *
+     * Architecture Multi-Tenant Pure :
+     * - Chaque organisation ne voit QUE les projets où elle participe activement
+     * - Aucune exception, aucun bypass (sauf System Admin)
+     * - SAMSIC, clients, partenaires : tous traités de la même manière
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      * @param \App\Models\User $user
