@@ -58,8 +58,11 @@
         }
         /* Mobile optimization */
         @media (max-width: 640px) {
-            .login-card {
-                max-height: calc(100vh - 120px);
+            body {
+                padding: 0.5rem;
+            }
+            .login-container {
+                max-height: 100vh;
                 overflow-y: auto;
             }
         }
@@ -72,22 +75,22 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-3 sm:py-8 sm:px-4 md:py-12 md:px-6 lg:px-8">
-    <div class="w-full max-w-[90%] sm:max-w-md space-y-4 sm:space-y-6 md:space-y-8">
+<body class="min-h-screen flex items-center justify-center py-0 sm:py-1 sm:px-4 md:py-2 md:px-6 lg:px-8">
+    <div class="login-container w-full max-w-[90%] sm:max-w-md space-y-3 sm:space-y-2 md:space-y-6">
         <!-- Logo -->
         <div class="logo-container text-center">
             <img src="{{ asset('images/logo-samsic.jpg') }}"
                  alt="Samsic Maintenance Maroc"
-                 class="mx-auto h-20 sm:h-24 md:h-28 lg:h-32 w-auto rounded-md sm:rounded-lg shadow-xl sm:shadow-2xl">
+                 class="mx-auto h-16 sm:h-24 md:h-16 lg:h-32 w-auto rounded-md sm:rounded-lg shadow-xl sm:shadow-2xl">
         </div>
 
         <!-- Login Card -->
-        <div class="login-card bg-white/95 rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-5 md:space-y-6">
+        <div class="login-card bg-white/95 rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-6 md:px-8 md:py-3 space-y-3 sm:space-y-5 md:space-y-6">
             <div class="text-center">
-                <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold text-gray-900">
+                <h2 class="text-xl sm:text-3xl md:text-3xl font-bold text-gray-900">
                     Bienvenue
                 </h2>
-                <p class="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-600">
+                <p class="mt-1 text-xs sm:text-sm text-gray-600">
                     Connectez-vous à votre compte
                 </p>
             </div>
@@ -98,10 +101,10 @@
                 </div>
             @endif
 
-            <form class="space-y-4 sm:space-y-5" action="{{ route('login') }}" method="POST">
+            <form class="space-y-3 sm:space-y-5" action="{{ route('login') }}" method="POST">
                 @csrf
 
-                <div class="space-y-3 sm:space-y-4">
+                <div class="space-y-2.5 sm:space-y-4">
                     <div>
                         <label for="email" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                             Adresse email
@@ -164,7 +167,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="text-center text-white/80 text-xs sm:text-sm px-2">
+        <div class="text-center text-white/80 text-[10px] sm:text-sm px-2">
             <p>&copy; {{ date('Y') }} Samsic Maintenance Maroc. Tous droits réservés.</p>
         </div>
     </div>
