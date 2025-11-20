@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\TenantScoped;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
 class Phase extends Model
 {
+    use TenantScoped;
+
     // ===================================
     // CONFIGURATION
     // ===================================

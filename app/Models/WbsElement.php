@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\TenantScoped;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WbsElement extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, TenantScoped;
 
     // ===================================
     // CONFIGURATION
