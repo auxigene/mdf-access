@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\TenantScoped;
 use Illuminate\Database\Eloquent\Model;
 
 class Milestone extends Model
 {
+    use TenantScoped;
+
     // ===================================
     // CONFIGURATION
     // ===================================

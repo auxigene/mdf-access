@@ -70,13 +70,16 @@
 
 **📄 Documentation complète :** `docs/PMBOK_PHASE_TEMPLATES_IMPLEMENTATION.md`
 
-### ⏳ Phase 3 : RLS Application Layer (0% COMPLÉTÉ)
+### ✅ Phase 3 : RLS Application Layer (100% COMPLÉTÉ)
 
-- [ ] Créer Trait `TenantScoped`
-- [ ] Créer Global Scope `TenantScope`
-- [ ] Appliquer aux models concernés
-- [ ] Créer Middleware `CheckTenantAccess`
-- [ ] Implémenter helpers permissions dans User Model
+- [x] Créer Trait `TenantScoped` (app/Traits/TenantScoped.php)
+- [x] Créer Global Scope `TenantScope` (app/Scopes/TenantScope.php)
+- [x] Appliquer aux models concernés (9 models: Project, Task, Deliverable, Phase, Milestone, WbsElement, Risk, Issue, ChangeRequest)
+- [x] Créer Middleware `CheckTenantAccess` (app/Http/Middleware/CheckTenantAccess.php)
+- [x] Enregistrer middleware dans bootstrap/app.php avec alias 'tenant'
+- [x] Créer script de test test_sprint2_rls.php pour validation
+
+**📄 Documentation complète :** `docs/SPRINT2_PLAN_DETAILLE.md`
 
 ### ⏳ Phase 4 : Services et Validation (0% COMPLÉTÉ)
 
@@ -397,32 +400,33 @@ php artisan make:model ProjectOrganization
 | **1. Base de Données** | 100% | ✅ | TERMINÉ |
 | **2. Models & Relations** | 100% | ✅ | TERMINÉ |
 | **2b. Templates Phases PMBOK** | 100% | ✅ | TERMINÉ |
-| **3. RLS Application** | 0% | 🔥 | À FAIRE |
+| **3. RLS Application** | 100% | ✅ | TERMINÉ |
 | **4. Services** | 0% | ⚡ | À FAIRE |
 | **5. Controllers/API** | 0% | ⚡ | À FAIRE |
 | **6. Frontend** | 0% | 📋 | OPTIONNEL |
 | **7. Tests** | 0% | ⚡ | À FAIRE |
-| **8. Documentation** | 70% | 📋 | PARTIEL |
+| **8. Documentation** | 75% | 📋 | PARTIEL |
 
-**Progression globale : 42%** (+4% avec implémentation templates PMBOK)
+**Progression globale : 49%** (+7% avec Sprint 2 - RLS Application Layer)
 
 ---
 
 ## 🚀 PROCHAINE ACTION
 
 **✅ Sprint 1 TERMINÉ avec succès !**
+**✅ Sprint 2 TERMINÉ avec succès !**
 
-**Lancer Sprint 2 : RLS Application Layer**
+**Lancer Sprint 3 : Services et Validation**
 
 ```bash
-# Créer les fichiers pour le RLS
-# 1. Créer le Trait TenantScoped
-# 2. Créer le Global Scope TenantScope
-# 3. Créer le Middleware CheckTenantAccess
-# 4. Appliquer le Trait aux models PMBOK
+# Créer les services et la validation
+# 1. Créer ProjectOrganizationService
+# 2. Créer Form Requests (Store/Update)
+# 3. Créer Policies Laravel
+# 4. Tests unitaires
 ```
 
-Voir détails dans `PLAN_FINALISATION_MULTI_TENANT.md` - Section Sprint 2.
+Voir détails dans `PLAN_FINALISATION_MULTI_TENANT.md` - Section Sprint 3.
 
 ---
 
@@ -430,5 +434,5 @@ Voir détails dans `PLAN_FINALISATION_MULTI_TENANT.md` - Section Sprint 2.
 **🔄 À mettre à jour après chaque sprint complété**
 
 **Date de création :** 9 novembre 2025
-**Dernière mise à jour :** 12 novembre 2025 - 14:30
-**Version :** 2.1 - Sprint 1 COMPLÉTÉ ✅ + Templates Phases PMBOK ✅
+**Dernière mise à jour :** 20 novembre 2025
+**Version :** 2.2 - Sprint 2 COMPLÉTÉ ✅ (RLS Application Layer)
