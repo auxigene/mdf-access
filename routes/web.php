@@ -30,6 +30,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Homepage Mockups (for preview/testing)
+Route::get('/mockup', function () {
+    return view('homepage-mockup');
+})->name('mockup.complete');
+
+Route::get('/mockup/minimal', function () {
+    return view('homepage-mockup-minimal');
+})->name('mockup.minimal');
+
 // Download page
 Route::get('/download', function () {
     return view('download');
