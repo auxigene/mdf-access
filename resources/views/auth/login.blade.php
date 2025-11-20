@@ -90,9 +90,6 @@
                 <h2 class="text-xl sm:text-3xl md:text-3xl font-bold text-gray-900">
                     Bienvenue
                 </h2>
-                <p class="mt-1 text-xs sm:text-sm text-gray-600">
-                    Connectez-vous à votre compte
-                </p>
             </div>
 
             @if (session('status'))
