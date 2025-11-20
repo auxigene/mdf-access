@@ -13,6 +13,7 @@ This folder contains numbered use case processes for the MDF Access platform. Th
 
 ### Development Processes
 
+- **[000-add-organization-without-ui.md](000-add-organization-without-ui.md)** - Add a new organization without having access to user interfaces. Essential during development stage when UI is unavailable or not yet implemented. Must be done before creating users.
 - **[001-add-user-without-ui.md](001-add-user-without-ui.md)** - Add a new user without having access to user interfaces. Essential during development stage when UI is unavailable or not yet implemented.
 
 ## Naming Convention
