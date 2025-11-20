@@ -17,7 +17,9 @@
         <nav class="max-w-7xl mx-auto px-6 py-6">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
-                <a href="/" class="text-2xl font-bold text-gray-900">MDF Access</a>
+                <a href="/" class="flex items-center">
+                    <img src="{{ asset('images/logo-samsic.jpg') }}" alt="Samsic Maintenance Maroc" class="h-12">
+                </a>
 
                 <!-- Auth Links -->
                 <div class="flex items-center space-x-6">
@@ -42,9 +44,7 @@
         <div class="max-w-4xl mx-auto text-center">
             <!-- Logo Icon -->
             <div class="mb-8">
-                <div class="inline-flex w-24 h-24 bg-gradient-to-br from-gray-900 to-gray-700 rounded-3xl items-center justify-center">
-                    <span class="text-white font-bold text-4xl">M</span>
-                </div>
+                <img src="{{ asset('images/logo-samsic.jpg') }}" alt="Samsic Maintenance Maroc" class="inline-block w-48 mx-auto">
             </div>
 
             <!-- Main Title -->
@@ -54,7 +54,7 @@
 
             <!-- Subtitle -->
             <p class="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
-                Gestion de Projets PMBOK Multi-Tenant Professionnelle
+                Gestion de Projets PMBOK Multi-Organisations Professionnelle
             </p>
 
             <!-- CTAs -->
@@ -88,7 +88,7 @@
                     <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
-                    <span>Multi-Tenant</span>
+                    <span>Multi-Organisations</span>
                 </div>
             </div>
         </div>
@@ -159,7 +159,7 @@
                 <!-- Colonne 1 -->
                 <div class="space-y-8">
                     <div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Multi-Tenant & Multi-Organisations</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Multi-Organisations</h3>
                         <p class="text-gray-600">
                             Isolation complète des données avec support de multiples organisations par projet.
                         </p>
@@ -260,8 +260,8 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <!-- Logo -->
-                <div class="text-xl font-bold text-gray-900 mb-4 md:mb-0">
-                    MDF Access
+                <div class="mb-4 md:mb-0">
+                    <img src="{{ asset('images/logo-samsic.jpg') }}" alt="Samsic Maintenance Maroc" class="h-10">
                 </div>
 
                 <!-- Links -->

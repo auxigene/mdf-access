@@ -27,16 +27,16 @@ use Illuminate\Support\Facades\Route;
 
 // Homepage
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome-samsic');
 })->name('home');
 
 // Homepage Mockups (for preview/testing)
 Route::get('/mockup', function () {
-    return view('homepage-mockup');
+    return view('homepage-mockup-samsic');
 })->name('mockup.complete');
 
 Route::get('/mockup/minimal', function () {
-    return view('homepage-mockup-minimal');
+    return view('homepage-mockup-samsic');
 })->name('mockup.minimal');
 
 // Download page
