@@ -12,6 +12,10 @@ class TenantScope implements Scope
     /**
      * Appliquer le scope à une query Eloquent
      *
+     * Architecture Multi-Tenant Pure :
+     * - System Admin (is_system_admin) : bypass complet
+     * - Toutes les autres organisations : filtrées sur leurs participations
+     *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return void
@@ -25,65 +29,40 @@ class TenantScope implements Scope
             return;
         }
 
-        // System Admin : bypass complet (voit tout)
+        // System Admin : SEUL cas de bypass
+        // Si SAMSIC ou toute autre organisation veut tout voir,
+        // les users doivent être System Admin OU participer à tous les projets
         if ($user->isSystemAdmin()) {
             return;
         }
 
-        // Internal (SAMSIC) : bypass complet (voit tout)
-        if ($user->isInternal()) {
-            return;
-        }
-
-        // Client : filtre sur client_organization_id
-        if ($user->isClient()) {
-            $this->applyClientFilter($builder, $user);
-            return;
-        }
-
-        // Partner : filtre sur participations projets
-        if ($user->isPartner()) {
-            $this->applyPartnerFilter($builder, $user);
-            return;
-        }
-
-        // Par défaut : ne rien afficher (sécurité)
-        $builder->whereRaw('1 = 0');
+        // TOUTES les organisations (y compris SAMSIC) : filtrées sur participations
+        // C'est l'essence du multi-tenant : chaque organisation ne voit que ce qui la concerne
+        $this->applyParticipationFilter($builder, $user);
     }
 
     /**
-     * Appliquer le filtre pour un utilisateur Client
-     *
-     * Filtre : client_organization_id = user.organization_id
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \App\Models\User $user
-     * @return void
-     */
-    protected function applyClientFilter(Builder $builder, $user): void
-    {
-        $tableName = $builder->getModel()->getTable();
-
-        // Vérifier si la table a la colonne client_organization_id
-        if ($this->hasColumn($tableName, 'client_organization_id')) {
-            $builder->where("{$tableName}.client_organization_id", $user->organization_id);
-        } else {
-            // Si pas de colonne, ne rien afficher (sécurité)
-            $builder->whereRaw('1 = 0');
-        }
-    }
-
-    /**
-     * Appliquer le filtre pour un utilisateur Partner
+     * Appliquer le filtre basé sur les participations (multi-tenant pur)
      *
      * Filtre : Projets où l'organisation participe (via project_organizations)
      *
+     * Architecture Multi-Tenant Pure :
+     * - Chaque organisation ne voit QUE les projets où elle participe activement
+     * - Aucune exception, aucun bypass (sauf System Admin)
+     * - SAMSIC, clients, partenaires : tous traités de la même manière
+     *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      * @param \App\Models\User $user
      * @return void
      */
-    protected function applyPartnerFilter(Builder $builder, $user): void
+    protected function applyParticipationFilter(Builder $builder, $user): void
     {
+        // Si pas d'organisation, ne rien afficher
+        if (!$user->organization_id) {
+            $builder->whereRaw('1 = 0');
+            return;
+        }
+
         $tableName = $builder->getModel()->getTable();
 
         // Pour la table projects : filtre via project_organizations
