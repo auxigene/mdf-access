@@ -35,55 +35,31 @@ class TenantScope implements Scope
             return;
         }
 
-        // Client : filtre sur client_organization_id
-        if ($user->isClient()) {
-            $this->applyClientFilter($builder, $user);
-            return;
-        }
-
-        // Partner : filtre sur participations projets
-        if ($user->isPartner()) {
-            $this->applyPartnerFilter($builder, $user);
-            return;
-        }
-
-        // Par défaut : ne rien afficher (sécurité)
-        $builder->whereRaw('1 = 0');
+        // Pour toutes les autres organisations : filtrer sur participations
+        // Note: Avec l'architecture contextuelle, une org peut avoir plusieurs rôles
+        // donc on filtre simplement sur toutes les participations actives
+        $this->applyParticipationFilter($builder, $user);
     }
 
     /**
-     * Appliquer le filtre pour un utilisateur Client
-     *
-     * Filtre : client_organization_id = user.organization_id
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \App\Models\User $user
-     * @return void
-     */
-    protected function applyClientFilter(Builder $builder, $user): void
-    {
-        $tableName = $builder->getModel()->getTable();
-
-        // Vérifier si la table a la colonne client_organization_id
-        if ($this->hasColumn($tableName, 'client_organization_id')) {
-            $builder->where("{$tableName}.client_organization_id", $user->organization_id);
-        } else {
-            // Si pas de colonne, ne rien afficher (sécurité)
-            $builder->whereRaw('1 = 0');
-        }
-    }
-
-    /**
-     * Appliquer le filtre pour un utilisateur Partner
+     * Appliquer le filtre basé sur les participations (architecture contextuelle)
      *
      * Filtre : Projets où l'organisation participe (via project_organizations)
+     * Note : Avec l'architecture contextuelle, on ne distingue plus Client/Partner
+     *        Une organisation voit tous les projets où elle participe, quel que soit son rôle
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      * @param \App\Models\User $user
      * @return void
      */
-    protected function applyPartnerFilter(Builder $builder, $user): void
+    protected function applyParticipationFilter(Builder $builder, $user): void
     {
+        // Si pas d'organisation, ne rien afficher
+        if (!$user->organization_id) {
+            $builder->whereRaw('1 = 0');
+            return;
+        }
+
         $tableName = $builder->getModel()->getTable();
 
         // Pour la table projects : filtre via project_organizations

@@ -21,10 +21,12 @@ class Organization extends Model
         'contact_info',
         'logo',
         'status',
+        'is_internal', // Flag pour identifier SAMSIC (organisation interne)
     ];
 
     protected $casts = [
         'contact_info' => 'array',
+        'is_internal' => 'boolean',
     ];
 
     // ===================================
@@ -343,6 +345,20 @@ class Organization extends Model
             ->with('project')
             ->get()
             ->pluck('project');
+    }
+
+    // ===================================
+    // HELPERS - Type d'Organisation
+    // ===================================
+
+    /**
+     * Vérifier si l'organisation est interne (SAMSIC)
+     *
+     * @return bool True si l'organisation est marquée comme interne
+     */
+    public function isInternal(): bool
+    {
+        return $this->is_internal === true;
     }
 
     // ===================================
