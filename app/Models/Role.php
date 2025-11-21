@@ -380,4 +380,171 @@ class Role extends Model
 
         return $desc;
     }
+
+    // ===================================
+    // EXTENDED SCOPE HELPERS
+    // ===================================
+
+    /**
+     * Check if role is task-scoped
+     */
+    public function isTaskScoped(): bool
+    {
+        return $this->scope === 'task';
+    }
+
+    /**
+     * Check if role is WBS element-scoped
+     */
+    public function isWbsElementScoped(): bool
+    {
+        return $this->scope === 'wbs_element';
+    }
+
+    /**
+     * Check if role is program-scoped
+     */
+    public function isProgramScoped(): bool
+    {
+        return $this->scope === 'program';
+    }
+
+    /**
+     * Check if role is portfolio-scoped
+     */
+    public function isPortfolioScoped(): bool
+    {
+        return $this->scope === 'portfolio';
+    }
+
+    /**
+     * Check if role is global-scoped
+     */
+    public function isGlobalScoped(): bool
+    {
+        return $this->scope === 'global';
+    }
+
+    /**
+     * Check if role can be assigned to a task
+     */
+    public function canBeAssignedToTask(): bool
+    {
+        return in_array($this->scope, ['task', 'wbs_element', 'project', 'organization']);
+    }
+
+    /**
+     * Check if role can be assigned to a WBS element
+     */
+    public function canBeAssignedToWbsElement(): bool
+    {
+        return in_array($this->scope, ['wbs_element', 'project', 'organization']);
+    }
+
+    /**
+     * Check if role can be assigned to a project
+     */
+    public function canBeAssignedToProject(): bool
+    {
+        return in_array($this->scope, ['project', 'organization']);
+    }
+
+    /**
+     * Check if role can be assigned to a specific user (considering organization)
+     */
+    public function canBeAssignedToUser(User $user): bool
+    {
+        // If role is organization-specific, user must be in that organization
+        if ($this->organization_id !== null) {
+            return $this->organization_id === $user->organization_id;
+        }
+
+        // Generic roles can be assigned to any user
+        return true;
+    }
+
+    /**
+     * Get all task-scoped roles
+     */
+    public static function getTaskRoles()
+    {
+        return static::where('scope', 'task')->get();
+    }
+
+    /**
+     * Get all WBS element-scoped roles
+     */
+    public static function getWbsElementRoles()
+    {
+        return static::where('scope', 'wbs_element')->get();
+    }
+
+    /**
+     * Get all project-scoped roles (optionally for specific organization)
+     */
+    public static function getProjectRoles(?int $organizationId = null)
+    {
+        $query = static::where('scope', 'project');
+
+        if ($organizationId !== null) {
+            $query->where(function ($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId)
+                    ->orWhereNull('organization_id');
+            });
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Get roles by scope (optionally for specific organization)
+     */
+    public static function getScopedRoles(string $scope, ?int $organizationId = null)
+    {
+        $query = static::where('scope', $scope);
+
+        if ($organizationId !== null) {
+            $query->where(function ($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId)
+                    ->orWhereNull('organization_id');
+            });
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Get numeric scope level (1 = task, 2 = wbs_element, ..., 7 = global)
+     * Higher numbers = less specific
+     */
+    public function getScopeLevel(): int
+    {
+        $levels = [
+            'task' => 1,
+            'wbs_element' => 2,
+            'project' => 3,
+            'program' => 4,
+            'portfolio' => 5,
+            'organization' => 6,
+            'global' => 7,
+        ];
+
+        return $levels[$this->scope] ?? 0;
+    }
+
+    /**
+     * Check if this role is more specific than another role
+     */
+    public function isMoreSpecificThan(Role $other): bool
+    {
+        return $this->getScopeLevel() < $other->getScopeLevel();
+    }
+
+    /**
+     * Check if this role is less specific than another role
+     */
+    public function isLessSpecificThan(Role $other): bool
+    {
+        return $this->getScopeLevel() > $other->getScopeLevel();
+    }
 }

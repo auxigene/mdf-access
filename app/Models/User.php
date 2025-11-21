@@ -55,6 +55,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'is_system_admin' => 'boolean',
             'two_factor_enabled' => 'boolean',
+            'cached_permissions' => 'array',
+            'permissions_cached_at' => 'datetime',
         ];
     }
 
@@ -376,5 +378,171 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->with('role')
                     ->get()
                     ->pluck('role');
+    }
+
+    // ===================================
+    // PROJECT TEAM METHODS
+    // ===================================
+
+    /**
+     * Get user's project team memberships
+     */
+    public function projectTeams()
+    {
+        return $this->hasMany(ProjectTeam::class);
+    }
+
+    /**
+     * Get user's active project team memberships
+     */
+    public function activeProjectTeams()
+    {
+        return $this->projectTeams()->currentlyActive();
+    }
+
+    /**
+     * Check if user is a member of a project team
+     */
+    public function isProjectTeamMember(Project $project): bool
+    {
+        return $this->projectTeams()
+            ->forProject($project)
+            ->currentlyActive()
+            ->exists();
+    }
+
+    /**
+     * Get user's role in a project team (returns the highest privilege role if multiple)
+     */
+    public function getProjectTeamRole(Project $project): ?Role
+    {
+        $teamMember = $this->projectTeams()
+            ->forProject($project)
+            ->currentlyActive()
+            ->with('role')
+            ->first();
+
+        return $teamMember?->role;
+    }
+
+    /**
+     * Get all projects user is a team member of
+     */
+    public function getTeamProjects()
+    {
+        return ProjectTeam::getUserProjects($this);
+    }
+
+    // ===================================
+    // PERMISSION CACHING
+    // ===================================
+
+    /**
+     * Cache user permissions for performance
+     */
+    public function cachePermissions(): void
+    {
+        $permissions = [
+            'global' => [],
+            'computed_at' => now()->toIso8601String(),
+            'roles' => [
+                'global' => [],
+                'organization' => [],
+                'projects' => [],
+            ],
+        ];
+
+        // Get all user roles (global, organization, project-scoped)
+        $userRoles = $this->roles()->with('permissions')->get();
+
+        foreach ($userRoles as $userRole) {
+            $rolePermissions = $userRole->role->permissions->pluck('slug')->toArray();
+
+            // Determine scope
+            $pivot = $userRole->pivot;
+            if ($pivot->project_id) {
+                $key = "project_{$pivot->project_id}";
+                $permissions[$key] = array_merge($permissions[$key] ?? [], $rolePermissions);
+                $permissions['roles']['projects'][$pivot->project_id] = $userRole->role->slug;
+            } elseif ($pivot->program_id) {
+                $key = "program_{$pivot->program_id}";
+                $permissions[$key] = array_merge($permissions[$key] ?? [], $rolePermissions);
+            } elseif ($pivot->portfolio_id) {
+                $key = "portfolio_{$pivot->portfolio_id}";
+                $permissions[$key] = array_merge($permissions[$key] ?? [], $rolePermissions);
+            } elseif ($this->organization_id) {
+                $key = "organization_{$this->organization_id}";
+                $permissions[$key] = array_merge($permissions[$key] ?? [], $rolePermissions);
+                $permissions['roles']['organization'][] = $userRole->role->slug;
+            } else {
+                $permissions['global'] = array_merge($permissions['global'], $rolePermissions);
+                $permissions['roles']['global'][] = $userRole->role->slug;
+            }
+        }
+
+        // Deduplicate permissions
+        foreach ($permissions as $key => $value) {
+            if (is_array($value) && $key !== 'roles') {
+                $permissions[$key] = array_unique($value);
+            }
+        }
+
+        $this->update([
+            'cached_permissions' => $permissions,
+            'permissions_cached_at' => now(),
+        ]);
+    }
+
+    /**
+     * Clear user's permission cache
+     */
+    public function clearPermissionsCache(): void
+    {
+        $this->update([
+            'cached_permissions' => null,
+            'permissions_cached_at' => null,
+        ]);
+    }
+
+    /**
+     * Get cached permissions (returns null if stale or missing)
+     */
+    public function getCachedPermissions(string $context = 'global'): ?array
+    {
+        // Check if cache exists and is fresh (15 minutes TTL)
+        if (!$this->cached_permissions || !$this->permissions_cached_at) {
+            return null;
+        }
+
+        if ($this->permissions_cached_at->lt(now()->subMinutes(15))) {
+            return null; // Cache is stale
+        }
+
+        return $this->cached_permissions[$context] ?? null;
+    }
+
+    /**
+     * Check if user has permission in context (with caching)
+     */
+    public function hasPermissionInContext(
+        string $permissionSlug,
+        ?Model $context = null,
+        bool $checkHierarchy = true
+    ): bool {
+        // System admin bypass
+        if ($this->is_system_admin) {
+            return true;
+        }
+
+        // Try cache first
+        if ($context instanceof Project) {
+            $cached = $this->getCachedPermissions("project_{$context->id}");
+            if ($cached !== null) {
+                return in_array($permissionSlug, $cached);
+            }
+        }
+
+        // Fallback to existing hasPermission method
+        return $this->hasPermission($permissionSlug, $context);
     }
 }
