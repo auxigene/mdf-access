@@ -537,4 +537,130 @@ class Project extends Model
     {
         return $this->status === 'on_hold';
     }
+
+    // ===================================
+    // PROJECT TEAM RELATIONSHIPS
+    // ===================================
+
+    /**
+     * Get project team memberships
+     */
+    public function projectTeams()
+    {
+        return $this->hasMany(ProjectTeam::class);
+    }
+
+    /**
+     * Get active project team memberships
+     */
+    public function activeProjectTeams()
+    {
+        return $this->projectTeams()->currentlyActive();
+    }
+
+    /**
+     * Get team members (users) through project_teams
+     */
+    public function teamMembers()
+    {
+        return $this->belongsToMany(User::class, 'project_teams')
+            ->withPivot(['role_id', 'start_date', 'end_date', 'is_active', 'is_primary', 'notes'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get active team members only
+     */
+    public function activeTeamMembers()
+    {
+        return $this->teamMembers()
+            ->wherePivot('is_active', true)
+            ->wherePivot(function ($query) {
+                $today = now()->toDateString();
+                $query->where(function ($q) use ($today) {
+                    $q->whereNull('start_date')
+                        ->orWhere('start_date', '<=', $today);
+                })->where(function ($q) use ($today) {
+                    $q->whereNull('end_date')
+                        ->orWhere('end_date', '>=', $today);
+                });
+            });
+    }
+
+    // ===================================
+    // PROJECT TEAM METHODS
+    // ===================================
+
+    /**
+     * Get team members filtered by role
+     */
+    public function getTeamMembersByRole(string $roleSlug)
+    {
+        return $this->activeProjectTeams()
+            ->withRole($roleSlug)
+            ->with('user')
+            ->get()
+            ->pluck('user');
+    }
+
+    /**
+     * Get the primary project manager
+     */
+    public function getPrimaryProjectManager(): ?User
+    {
+        $teamMember = $this->activeProjectTeams()
+            ->primary()
+            ->with('user')
+            ->first();
+
+        return $teamMember?->user;
+    }
+
+    /**
+     * Add a team member to the project
+     */
+    public function addTeamMember(User $user, Role $role, array $options = []): ProjectTeam
+    {
+        return ProjectTeam::assignUserToProject($this, $user, $role, $options);
+    }
+
+    /**
+     * Remove a team member from the project
+     */
+    public function removeTeamMember(User $user, ?Role $role = null): bool
+    {
+        return ProjectTeam::removeUserFromProject($this, $user, $role);
+    }
+
+    /**
+     * Check if a user is a team member
+     */
+    public function hasTeamMember(User $user): bool
+    {
+        return $user->isProjectTeamMember($this);
+    }
+
+    /**
+     * Check if user can access this project (considering team membership and org participation)
+     */
+    public function canUserAccessProject(User $user): bool
+    {
+        // System admin can access everything
+        if ($user->is_system_admin) {
+            return true;
+        }
+
+        // Check if user is a team member
+        if ($this->hasTeamMember($user)) {
+            return true;
+        }
+
+        // Check if user's organization participates in the project
+        $participates = $this->organizations()
+            ->where('organization_id', $user->organization_id)
+            ->where('status', 'active')
+            ->exists();
+
+        return $participates;
+    }
 }
