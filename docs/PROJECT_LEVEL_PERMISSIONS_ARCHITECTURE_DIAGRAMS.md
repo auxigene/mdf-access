@@ -4,12 +4,12 @@ This document provides visual representations of the project-level permissions a
 
 ---
 
-## 1. Permission Resolution Flow
+## 1. Permission Resolution Flow (Extended Hierarchy)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Permission Check Request                  │
-│         User: John | Permission: edit_tasks | Context: Project A │
+│     User: John | Permission: edit_tasks | Context: Task #456 │
 └────────────────────────────┬────────────────────────────────┘
                              │
                              ▼
@@ -21,53 +21,75 @@ This document provides visual representations of the project-level permissions a
                     │ YES             │ NO
                     ▼                 ▼
               ┌──────────┐     ┌─────────────────────┐
-              │  GRANT   │     │ Check Project-Level │
+              │  GRANT   │     │ Check Task-Level    │
               └──────────┘     │      Roles          │
+                               │ (most specific)     │
                                └──────────┬──────────┘
                                           │
                                  ┌────────┴────────┐
                                  │ Found & Has     │ Not Found
                                  │ Permission?     │
                                  ▼                 ▼
-                           ┌──────────┐    ┌─────────────────────┐
-                           │  GRANT   │    │ Check Program-Level │
-                           └──────────┘    │      Roles          │
-                                           └──────────┬──────────┘
+                           ┌──────────┐    ┌──────────────────────┐
+                           │  GRANT   │    │ Check WBS Element-   │
+                           └──────────┘    │    Level Roles       │
+                                           └──────────┬───────────┘
                                                       │
                                              ┌────────┴────────┐
                                              │ Found & Has     │ Not Found
                                              │ Permission?     │
                                              ▼                 ▼
-                                       ┌──────────┐    ┌───────────────────────┐
-                                       │  GRANT   │    │ Check Portfolio-Level │
-                                       └──────────┘    │       Roles           │
-                                                       └──────────┬────────────┘
+                                       ┌──────────┐    ┌─────────────────────┐
+                                       │  GRANT   │    │ Check Project-Level │
+                                       └──────────┘    │      Roles          │
+                                                       └──────────┬──────────┘
                                                                   │
                                                          ┌────────┴────────┐
                                                          │ Found & Has     │ Not Found
                                                          │ Permission?     │
                                                          ▼                 ▼
-                                                   ┌──────────┐    ┌────────────────────────┐
-                                                   │  GRANT   │    │ Check Organization-    │
-                                                   └──────────┘    │    Level Roles         │
-                                                                   └──────────┬─────────────┘
+                                                   ┌──────────┐    ┌─────────────────────┐
+                                                   │  GRANT   │    │ Check Program-Level │
+                                                   └──────────┘    │      Roles          │
+                                                                   └──────────┬──────────┘
                                                                               │
                                                                      ┌────────┴────────┐
                                                                      │ Found & Has     │ Not Found
                                                                      │ Permission?     │
                                                                      ▼                 ▼
-                                                               ┌──────────┐    ┌─────────────────┐
-                                                               │  GRANT   │    │ Check Global    │
-                                                               └──────────┘    │     Roles       │
-                                                                               └──────────┬──────┘
+                                                               ┌──────────┐    ┌───────────────────────┐
+                                                               │  GRANT   │    │ Check Portfolio-Level │
+                                                               └──────────┘    │       Roles           │
+                                                                               └──────────┬────────────┘
                                                                                           │
                                                                                  ┌────────┴────────┐
                                                                                  │ Found & Has     │ Not Found
                                                                                  │ Permission?     │
                                                                                  ▼                 ▼
-                                                                           ┌──────────┐      ┌──────────┐
-                                                                           │  GRANT   │      │   DENY   │
-                                                                           └──────────┘      └──────────┘
+                                                                           ┌──────────┐    ┌────────────────────────┐
+                                                                           │  GRANT   │    │ Check Organization-    │
+                                                                           └──────────┘    │    Level Roles         │
+                                                                                           └──────────┬─────────────┘
+                                                                                                      │
+                                                                                             ┌────────┴────────┐
+                                                                                             │ Found & Has     │ Not Found
+                                                                                             │ Permission?     │
+                                                                                             ▼                 ▼
+                                                                                       ┌──────────┐    ┌─────────────────┐
+                                                                                       │  GRANT   │    │ Check Global    │
+                                                                                       └──────────┘    │     Roles       │
+                                                                                                       └──────────┬──────┘
+                                                                                                                  │
+                                                                                                         ┌────────┴────────┐
+                                                                                                         │ Found & Has     │ Not Found
+                                                                                                         │ Permission?     │
+                                                                                                         ▼                 ▼
+                                                                                                   ┌──────────┐      ┌──────────┐
+                                                                                                   │  GRANT   │      │   DENY   │
+                                                                                                   └──────────┘      └──────────┘
+
+**Scope Levels (Most Specific → Least Specific):**
+1. Task → 2. WBS Element → 3. Project → 4. Program → 5. Portfolio → 6. Organization → 7. Global
 ```
 
 ---
@@ -183,7 +205,7 @@ This document provides visual representations of the project-level permissions a
 
 ---
 
-## 3. Role Scope Hierarchy
+## 3. Role Scope Hierarchy (Extended)
 
 ```
                     ┌─────────────────────────┐
@@ -233,9 +255,30 @@ This document provides visual representations of the project-level permissions a
                     │ • Budget Controller     │
                     │ • Quality Manager       │
                     │ • Project Observer      │
+                    └────────────┬────────────┘
+                                 │
+                                 │ Scope: Specific Project
+                                 │
+                    ┌────────────▼────────────┐
+                    │  WBS ELEMENT ROLES      │
+                    │                         │
+                    │ • Work Package Manager  │
+                    │ • Phase Lead            │
+                    │ • Deliverable Owner     │
+                    └────────────┬────────────┘
+                                 │
+                                 │ Scope: Specific WBS Element
+                                 │
+                    ┌────────────▼────────────┐
+                    │     TASK ROLES          │
+                    │                         │
+                    │ • Task Owner            │
+                    │ • Task Assignee         │
+                    │ • Task Reviewer         │
+                    │ • Task Observer         │
                     └─────────────────────────┘
                                  │
-                                 │ Scope: Specific Project Only
+                                 │ Scope: Specific Task Only
                                  │
                                  ▼
                         Most Granular Level
@@ -243,9 +286,13 @@ This document provides visual representations of the project-level permissions a
 
 **Permission Inheritance:**
 - Higher scope roles CAN grant access to lower scope resources
-- Example: Portfolio Director can view all projects in their portfolio
+  - Example: Portfolio Director can view all projects in their portfolio
+  - Example: Project Manager can view all tasks in their project
+  - Example: WBS Manager can view all tasks in their WBS element
 - Lower scope roles CANNOT grant access to higher scope resources
-- Example: Project Manager cannot manage other portfolios
+  - Example: Project Manager cannot manage other portfolios
+  - Example: Task Owner cannot view other project tasks
+- **Scope Precedence:** Task > WBS Element > Project > Program > Portfolio > Organization > Global
 
 ---
 
@@ -422,6 +469,89 @@ Result: ❌ DENY ACCESS
 
     Same user, different permissions per project!
 ```
+
+---
+
+## 6b. Extended Multi-Level User Permissions
+
+```
+                          ┌──────────────────┐
+                          │   User: Sarah    │
+                          │  Org: TechCorp   │
+                          └────────┬─────────┘
+                                   │
+       ┌───────────────────────────┼───────────────────────────┐
+       │                           │                           │
+       ▼                           ▼                           ▼
+┌──────────────┐          ┌──────────────┐          ┌──────────────┐
+│ Project X    │          │ Project Y    │          │ Project Z    │
+├──────────────┤          ├──────────────┤          ├──────────────┤
+│ PROJECT      │          │ PROJECT      │          │ PROJECT      │
+│ MANAGER      │          │ TECHNICAL    │          │ OBSERVER     │
+│              │          │ LEAD         │          │              │
+│ Full Project │          │ Project-wide │          │ Read-only    │
+│ Access       │          │ Tech Access  │          │ Access       │
+└──────┬───────┘          └──────┬───────┘          └──────────────┘
+       │                         │
+       │                         │
+       │  ┌──────────────────────┴────────┐
+       │  │                                │
+       ▼  ▼                                ▼
+   ┌────────────┐                  ┌────────────┐
+   │ WBS: Phase │                  │ WBS: API   │
+   │ 1 Design   │                  │ Module     │
+   ├────────────┤                  ├────────────┤
+   │ WORK PKG   │                  │ WBS        │
+   │ MANAGER    │                  │ MANAGER    │
+   │            │                  │            │
+   │ Manages    │                  │ Manages    │
+   │ all tasks  │                  │ API tasks  │
+   │ in Phase 1 │                  │ only       │
+   └─────┬──────┘                  └─────┬──────┘
+         │                               │
+         │                               │
+         ▼                               ▼
+   ┌─────────────┐              ┌──────────────┐
+   │ Task: UI    │              │ Task: Auth   │
+   │ Mockups     │              │ Endpoint     │
+   ├─────────────┤              ├──────────────┤
+   │ TASK OWNER  │              │ TASK OWNER   │
+   │             │              │              │
+   │ Can edit    │              │ Can edit     │
+   │ this task   │              │ this task    │
+   │ only        │              │ only         │
+   └─────────────┘              └──────────────┘
+
+
+Permission Matrix for Sarah:
+
+Project X:
+  └─ PROJECT MANAGER role
+     ├─ Full access to all resources
+     ├─ Can manage all WBS elements
+     └─ Can manage all tasks
+
+Project Y:
+  └─ TECHNICAL LEAD role (project-level)
+     ├─ Technical permissions project-wide
+     └─ WBS: API Module
+        └─ WBS MANAGER role
+           ├─ Manages API Module WBS
+           └─ Task: Auth Endpoint
+              └─ TASK OWNER role
+                 └─ Owns Auth Endpoint task specifically
+
+Project Z:
+  └─ OBSERVER role
+     └─ Read-only access, no editing
+
+Sarah's effective permissions when editing Task "Auth Endpoint":
+1. Check Task-level: TASK OWNER → GRANT (most specific wins!)
+2. Even if WBS MANAGER and TECHNICAL LEAD didn't exist,
+   TASK OWNER alone would grant permission to this specific task
+```
+
+**Key Insight:** The most specific role always wins. Sarah doesn't need project-wide permissions to work on a specific task if she's assigned as Task Owner for that task.
 
 ---
 

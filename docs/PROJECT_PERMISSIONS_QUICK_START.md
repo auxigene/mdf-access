@@ -2,6 +2,17 @@
 
 This guide provides a step-by-step implementation plan for Phase 1 (Foundation) of the project-level permissions refactoring.
 
+**Note:** This guide focuses on implementing **Project-level** permissions as the first priority. The full system supports 7 scope levels:
+1. **Task** - Most granular (task-specific assignments)
+2. **WBS Element** - Work package/phase level
+3. **Project** - Project-wide roles (FOCUS OF THIS GUIDE)
+4. **Program** - Program-wide roles
+5. **Portfolio** - Portfolio-wide roles
+6. **Organization** - Organization-wide roles
+7. **Global** - Platform-wide roles
+
+After completing this guide for project-level permissions, you can extend to task and WBS element scopes using the same patterns.
+
 ---
 
 ## Prerequisites
@@ -1347,6 +1358,125 @@ Once Phase 1 is complete and stable:
 
 **Issue:** Permission cache not clearing
 - **Solution:** Verify `clearPermissionsCache()` method is called after team changes
+
+---
+
+## Extending to Task and WBS Element Scopes
+
+After successfully implementing project-level permissions, you can extend the system to support task and WBS element scopes using the same patterns.
+
+### Task-Level Permissions
+
+**When to implement:** When you need fine-grained control over individual task assignments.
+
+**Use cases:**
+- Assign specific tasks to external contractors without giving project-wide access
+- Implement task ownership where only the owner can edit/complete their task
+- Enable task-specific reviewers for quality control workflows
+
+**Implementation steps:**
+1. Add `task_id` foreign key to `user_roles` table (already in main plan)
+2. Update `roles.scope` enum to include 'task' (already in main plan)
+3. Create task-scoped roles: `task_owner`, `task_assignee`, `task_reviewer`
+4. Update `PermissionResolver` to check task-level roles first
+5. Create `TaskTeam` model (similar to `ProjectTeam`) or extend `user_roles` pivot directly
+
+**Example:**
+```php
+// Assign user as task owner
+$task = Task::find(456);
+$taskOwnerRole = Role::where('slug', 'task_owner')->where('scope', 'task')->first();
+
+DB::table('user_roles')->insert([
+    'user_id' => $user->id,
+    'role_id' => $taskOwnerRole->id,
+    'task_id' => $task->id,
+]);
+
+// Check permission
+$user->hasPermissionInContext('edit_tasks', $task); // Checks task-level first
+```
+
+### WBS Element-Level Permissions
+
+**When to implement:** When you need to delegate management of specific work packages or project phases.
+
+**Use cases:**
+- Assign work package managers who control a group of tasks
+- Give subcontractors access only to their contracted scope (WBS element)
+- Implement phase-specific permissions (e.g., "Testing Phase Manager")
+
+**Implementation steps:**
+1. Add `wbs_element_id` foreign key to `user_roles` table (already in main plan)
+2. Update `roles.scope` enum to include 'wbs_element' (already in main plan)
+3. Create WBS-scoped roles: `work_package_manager`, `phase_lead`, `deliverable_owner`
+4. Update `PermissionResolver` to check WBS-level roles after task-level
+5. Implement `WbsTeam` model or extend pivot table
+
+**Example:**
+```php
+// Assign user as work package manager
+$wbsElement = WbsElement::find(45); // "Phase 2: Development"
+$wpmRole = Role::where('slug', 'work_package_manager')->where('scope', 'wbs_element')->first();
+
+DB::table('user_roles')->insert([
+    'user_id' => $user->id,
+    'role_id' => $wpmRole->id,
+    'wbs_element_id' => $wbsElement->id,
+]);
+
+// Check permission - user can edit all tasks under this WBS element
+$task = Task::where('wbs_element_id', 45)->first();
+$user->hasPermissionInContext('edit_tasks', $task); // Checks WBS-level (task's parent)
+```
+
+### Permission Resolution with All Scopes
+
+With all scopes implemented, the resolution order becomes:
+
+```
+1. System Admin? → GRANT
+2. Task-level role? → GRANT if found
+3. WBS Element-level role? → GRANT if found
+4. Project-level role? → GRANT if found
+5. Program-level role? → GRANT if found
+6. Portfolio-level role? → GRANT if found
+7. Organization-level role? → GRANT if found
+8. Global role? → GRANT if found
+9. Otherwise → DENY
+```
+
+**Context Resolution:**
+```php
+// Given a task, resolve hierarchy
+$task = Task::find(123);
+
+// Hierarchy: Task → WBS Element → Project → Program → Portfolio
+$contexts = [
+    $task,                           // Task #123
+    $task->wbsElement,              // WBS Element #45 (parent)
+    $task->wbsElement->project,     // Project #12 (grandparent)
+    $task->project->program,        // Program #3 (great-grandparent)
+    $task->project->program->portfolio, // Portfolio #1 (great-great-grandparent)
+];
+
+// Check user's roles at each level
+foreach ($contexts as $context) {
+    if ($user->hasRoleInContext($context)) {
+        return GRANT;
+    }
+}
+```
+
+### Recommended Implementation Order
+
+1. **Phase 1:** Project-level permissions (THIS GUIDE) ✅
+2. **Phase 2:** Services, Policies, API for project-level
+3. **Phase 3:** Frontend UI for project team management
+4. **Phase 4:** WBS Element-level permissions (optional, as needed)
+5. **Phase 5:** Task-level permissions (optional, for high-security environments)
+
+**Note:** Task and WBS element scopes add complexity. Only implement them if you have clear use cases. Project-level permissions alone cover 80% of typical needs.
 
 ---
 

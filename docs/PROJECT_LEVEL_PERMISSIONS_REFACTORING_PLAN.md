@@ -76,17 +76,37 @@ PORTFOLIO ROLE (portfolio-specific)
     ↓
 PROGRAM ROLE (program-specific)
     ↓
-PROJECT ROLE (most granular)
+PROJECT ROLE (project-specific)
+    ↓
+WBS_ELEMENT ROLE (WBS element-specific)
+    ↓
+TASK ROLE (most granular - task-specific)
 ```
+
+**Scope Levels (in order of precedence - most specific to least specific):**
+1. **Task** - Assignment to specific task (e.g., task owner, task reviewer)
+2. **WBS Element** - Assignment to work breakdown structure element (e.g., work package manager)
+3. **Project** - Assignment to project (e.g., project manager, technical lead)
+4. **Program** - Assignment to program (e.g., program manager)
+5. **Portfolio** - Assignment to portfolio (e.g., portfolio director)
+6. **Organization** - Organization-wide role (e.g., department head)
+7. **Global** - Platform-wide role (e.g., PMO director, system architect)
 
 **Resolution Logic:**
 1. If user is system admin → **GRANT**
-2. Check project-level role permissions → **GRANT if found**
-3. Check program-level role permissions (if project has program) → **GRANT if found**
-4. Check portfolio-level role permissions (if project has portfolio via program) → **GRANT if found**
-5. Check organization-level role permissions → **GRANT if found**
-6. Check global role permissions → **GRANT if found**
-7. Otherwise → **DENY**
+2. Check task-level role permissions (if context is a task) → **GRANT if found**
+3. Check WBS element-level role permissions (if context is WBS or task has WBS parent) → **GRANT if found**
+4. Check project-level role permissions → **GRANT if found**
+5. Check program-level role permissions (if project has program) → **GRANT if found**
+6. Check portfolio-level role permissions (if project has portfolio via program) → **GRANT if found**
+7. Check organization-level role permissions → **GRANT if found**
+8. Check global role permissions → **GRANT if found**
+9. Otherwise → **DENY**
+
+**Why Task and WBS Element Scopes?**
+- **Task-level permissions** enable fine-grained control for task assignment (e.g., Alice owns Task #123, Bob reviews Task #456)
+- **WBS element permissions** support work package management where a user manages a specific deliverable or phase
+- **Supports PMBOK best practices** where work is hierarchically decomposed and assigned at different levels
 
 ### Project Team Membership
 
@@ -144,12 +164,84 @@ Schema::create('project_teams', function (Blueprint $table) {
 });
 ```
 
-#### 1.2 Add project context columns to `role_permission`
+#### 1.2 Update `user_roles` table to support WBS and Task scopes
+**File:** `database/migrations/YYYY_MM_DD_add_wbs_task_scope_to_user_roles.php`
+
+```php
+Schema::table('user_roles', function (Blueprint $table) {
+    $table->foreignId('wbs_element_id')
+        ->nullable()
+        ->after('project_id')
+        ->constrained('wbs_elements')
+        ->onDelete('cascade')
+        ->comment('Optional WBS element scope for this role assignment');
+
+    $table->foreignId('task_id')
+        ->nullable()
+        ->after('wbs_element_id')
+        ->constrained('tasks')
+        ->onDelete('cascade')
+        ->comment('Optional task scope for this role assignment');
+
+    // Update unique constraint to include new scope fields
+    $table->dropUnique('user_roles_unique');
+    $table->unique(
+        ['user_id', 'role_id', 'portfolio_id', 'program_id', 'project_id', 'wbs_element_id', 'task_id'],
+        'user_roles_unique_extended'
+    );
+
+    // Add check constraint to ensure only ONE scope is set
+    DB::statement('ALTER TABLE user_roles ADD CONSTRAINT check_single_scope
+        CHECK (
+            (portfolio_id IS NOT NULL)::integer +
+            (program_id IS NOT NULL)::integer +
+            (project_id IS NOT NULL)::integer +
+            (wbs_element_id IS NOT NULL)::integer +
+            (task_id IS NOT NULL)::integer <= 1
+        )');
+
+    $table->index('wbs_element_id');
+    $table->index('task_id');
+});
+```
+
+#### 1.3 Update `roles` table scope enum
+**File:** `database/migrations/YYYY_MM_DD_expand_role_scope_enum.php`
+
+```php
+DB::statement("ALTER TABLE roles MODIFY scope ENUM(
+    'global',
+    'organization',
+    'portfolio',
+    'program',
+    'project',
+    'wbs_element',
+    'task'
+) NOT NULL DEFAULT 'global'");
+```
+
+**Note:** For PostgreSQL, use:
+```php
+DB::statement("ALTER TABLE roles ALTER COLUMN scope TYPE VARCHAR(20)");
+// Then add a check constraint
+DB::statement("ALTER TABLE roles ADD CONSTRAINT roles_scope_check
+    CHECK (scope IN ('global', 'organization', 'portfolio', 'program', 'project', 'wbs_element', 'task'))");
+```
+
+#### 1.4 Add scope context to `role_permission`
 **File:** `database/migrations/YYYY_MM_DD_add_scope_to_role_permission.php`
 
 ```php
 Schema::table('role_permission', function (Blueprint $table) {
-    $table->enum('scope_level', ['global', 'organization', 'portfolio', 'program', 'project'])
+    $table->enum('scope_level', [
+        'global',
+        'organization',
+        'portfolio',
+        'program',
+        'project',
+        'wbs_element',
+        'task'
+    ])
         ->default('global')
         ->after('permission_id');
     $table->text('scope_description')->nullable()->after('scope_level');
@@ -158,7 +250,7 @@ Schema::table('role_permission', function (Blueprint $table) {
 });
 ```
 
-#### 1.3 Add cached permissions to `users` table (performance)
+#### 1.5 Add cached permissions to `users` table (performance)
 **File:** `database/migrations/YYYY_MM_DD_add_permissions_cache_to_users.php`
 
 ```php
@@ -304,17 +396,31 @@ public function canUserAccessProject(User $user): bool
 
 **New Methods:**
 ```php
+// Scope checking methods
+public function isTaskScoped(): bool
+public function isWbsElementScoped(): bool
 public function isProjectScoped(): bool
 public function isProgramScoped(): bool
 public function isPortfolioScoped(): bool
 public function isOrganizationScoped(): bool
 public function isGlobalScoped(): bool
 
+// Assignment validation
+public function canBeAssignedToTask(): bool
+public function canBeAssignedToWbsElement(): bool
 public function canBeAssignedToProject(): bool
 public function canBeAssignedToUser(User $user): bool
 
+// Query helpers
+public static function getTaskRoles(): Collection
+public static function getWbsElementRoles(): Collection
 public static function getProjectRoles(?int $organizationId = null): Collection
 public static function getScopedRoles(string $scope, ?int $organizationId = null): Collection
+
+// Scope level comparison
+public function getScopeLevel(): int // Returns numeric level (1=task, 2=wbs, ..., 7=global)
+public function isMoreSpecificThan(Role $other): bool
+public function isLessSpecificThan(Role $other): bool
 ```
 
 **Deliverables:**
@@ -416,13 +522,58 @@ class ProjectAccessManager
 ```php
 class RoleHierarchyResolver
 {
-    public function getEffectiveRole(User $user, Project $project): ?Role
-    public function getRolesByPrecedence(User $user, ?Model $context = null): Collection
-    public function getRoleScopePrecedence(): array // ['project', 'program', 'portfolio', 'organization', 'global']
+    /**
+     * Get effective role for user in context (most specific scope)
+     */
+    public function getEffectiveRole(User $user, Model $context): ?Role
 
-    public function inheritPermissions(Role $fromRole, Role $toRole): void
+    /**
+     * Get all user roles sorted by precedence (most specific first)
+     */
+    public function getRolesByPrecedence(User $user, ?Model $context = null): Collection
+
+    /**
+     * Get scope precedence order
+     * Returns: ['task', 'wbs_element', 'project', 'program', 'portfolio', 'organization', 'global']
+     */
+    public function getRoleScopePrecedence(): array
+
+    /**
+     * Resolve context hierarchy (e.g., Task -> WBS Element -> Project -> Program -> Portfolio)
+     */
+    public function resolveContextHierarchy(Model $context): Collection
+
+    /**
+     * Check if a role at one scope can inherit permissions from another scope
+     */
+    public function canInheritFrom(string $childScope, string $parentScope): bool
+
+    /**
+     * Get inherited permissions for a role at target scope
+     */
     public function getInheritedPermissions(Role $role, string $targetScope): Collection
+
+    /**
+     * Get numeric scope level (1 = most specific, 7 = least specific)
+     */
+    public function getScopeLevel(string $scope): int
 }
+```
+
+**Example Context Resolution:**
+```php
+// Given a Task, resolve all parent contexts
+$task = Task::find(123);
+$hierarchy = $resolver->resolveContextHierarchy($task);
+
+// Returns:
+// [
+//     Task #123,
+//     WbsElement #45 (parent of task),
+//     Project #12 (parent of WBS element),
+//     Program #3 (parent of project),
+//     Portfolio #1 (parent of program)
+// ]
 ```
 
 **Deliverables:**
@@ -431,6 +582,94 @@ class RoleHierarchyResolver
 - [ ] `RoleHierarchyResolver` service created
 - [ ] Service provider registration
 - [ ] Integration tests for permission resolution
+- [ ] Context hierarchy resolution tests for Task → WBS → Project → Program → Portfolio
+
+---
+
+### Practical Use Cases for Granular Scopes
+
+#### Task-Level Permissions
+
+**Scenario 1: Task Ownership**
+- User "Alice" is assigned as **Task Owner** for Task #456 "Implement Authentication API"
+- Alice gets `edit_tasks`, `complete_tasks`, `comment_tasks` permissions ONLY for Task #456
+- Alice does NOT have these permissions for other tasks in the project
+- Useful for: Assigning specific work items without granting project-wide task access
+
+**Scenario 2: Task Review**
+- User "Bob" is assigned as **Task Reviewer** for Task #789 "Code Review"
+- Bob gets `view_tasks`, `comment_tasks`, `approve_tasks` permissions ONLY for Task #789
+- Useful for: Quality control workflows where external reviewers need limited access
+
+**Implementation:**
+```php
+// Assign Alice as task owner
+$task = Task::find(456);
+$ownerRole = Role::where('slug', 'task_owner')->first();
+$alice->assignRole($ownerRole, $task);
+
+// Check permission
+$alice->hasPermissionInContext('edit_tasks', $task); // true for Task #456
+$alice->hasPermissionInContext('edit_tasks', $otherTask); // false for other tasks
+```
+
+#### WBS Element-Level Permissions
+
+**Scenario 1: Work Package Manager**
+- User "Carol" manages WBS Element "Phase 2: Development"
+- Carol gets `view_wbs`, `edit_wbs`, `view_tasks`, `create_tasks`, `edit_tasks` for ALL tasks under "Phase 2"
+- Carol does NOT have access to tasks in "Phase 1" or "Phase 3"
+- Useful for: Delegating management of specific project phases or deliverables
+
+**Scenario 2: Subcontractor Scope**
+- External subcontractor "DevCorp" is assigned to WBS Element "Mobile App Module"
+- DevCorp users can only see/edit tasks within their assigned module
+- Enforces scope boundaries for multi-vendor projects
+- Useful for: Limiting subcontractor access to their contracted scope
+
+**Implementation:**
+```php
+// Assign Carol as work package manager
+$wbsElement = WbsElement::find(45); // "Phase 2: Development"
+$wpmRole = Role::where('slug', 'work_package_manager')->first();
+$carol->assignRole($wpmRole, $wbsElement);
+
+// Check permission for task within WBS element
+$task = Task::where('wbs_element_id', 45)->first();
+$carol->hasPermissionInContext('edit_tasks', $task); // true (task is in Carol's WBS)
+
+// Check permission for task outside WBS element
+$otherTask = Task::where('wbs_element_id', 67)->first();
+$carol->hasPermissionInContext('edit_tasks', $otherTask); // false
+```
+
+#### Hierarchy Example: Real-World Project
+
+```
+Project: "Website Redesign" (Project Manager: Alice)
+├── WBS: "Frontend Development" (Work Package Manager: Bob)
+│   ├── Task: "Homepage UI" (Task Owner: Carol)
+│   ├── Task: "Product Pages" (Task Owner: Dave)
+│   └── Task: "Checkout Flow" (Task Owner: Eve)
+├── WBS: "Backend API" (Work Package Manager: Frank)
+│   ├── Task: "Authentication API" (Task Owner: Grace)
+│   └── Task: "Payment Integration" (Task Owner: Henry)
+└── WBS: "Testing & QA" (Work Package Manager: Ivan)
+    └── Task: "Security Audit" (Task Reviewer: External Auditor)
+
+Permissions:
+- Alice: Full project access (project manager)
+- Bob: Can manage all tasks under "Frontend Development" WBS
+- Carol: Can only edit "Homepage UI" task
+- External Auditor: Can only view/comment on "Security Audit" task
+```
+
+**Benefits:**
+1. **Principle of Least Privilege** - Users get only the access they need
+2. **Flexible Delegation** - Project managers can delegate without over-permissioning
+3. **Multi-Vendor Support** - Cleanly isolate subcontractor access
+4. **Compliance** - Audit trail shows exactly who had access to what
+5. **Scalability** - Large projects can have hundreds of tasks with granular ownership
 
 ---
 
