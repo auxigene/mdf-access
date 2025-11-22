@@ -1,61 +1,168 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# MDF Access
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Multi-Tenant PMBOK Project Management Platform**
 
-## About Laravel
+MDF Access is a comprehensive project management platform built on Laravel 12 that implements PMBOK (Project Management Body of Knowledge) best practices with complete multi-tenant architecture.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+# Install dependencies and setup
+composer setup
 
-## Learning Laravel
+# Start development servers
+composer dev
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+# Access the application
+http://localhost:8000
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**See:** [Complete Quick Start Guide →](docs/00-GETTING-STARTED/Quick-Start-Guide.md)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🌟 Key Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- ✅ **Multi-Tenant Architecture** - Complete data isolation per organization
+- ✅ **PMBOK Compliance** - Full Portfolio → Program → Project hierarchy
+- ✅ **Flexible Permissions** - 174 permissions, 29 roles
+- ✅ **Phase Templates** - PMBOK, Scrum, Hybrid methodologies
+- ✅ **Multi-Organization Projects** - MOA, MOE, Sponsor, Subcontractor roles
+- ✅ **Field Maintenance Module** - Infrastructure/telecom site management
+- ✅ **Excel Import/Export** - Bulk data operations
+- ✅ **RESTful API** - Complete API with authentication
+- ✅ **2FA Support** - Google Authenticator integration
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📚 Documentation
 
-## Contributing
+**Complete documentation is available in the [/docs](docs/README.md) directory:**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Section | Description |
+|---------|-------------|
+| 🚀 [Getting Started](docs/00-GETTING-STARTED/README.md) | Installation, overview, quick start |
+| 🏗️ [Architecture](docs/01-ARCHITECTURE/README.md) | System design, multi-tenancy, permissions |
+| ✨ [Features](docs/02-FEATURES/README.md) | All platform capabilities |
+| 🔌 [API Reference](docs/03-API-REFERENCE/README.md) | Complete API documentation |
+| 🔄 [Workflows](docs/04-WORKFLOWS/README.md) | Step-by-step guides |
+| 🚀 [Deployment](docs/05-DEPLOYMENT/README.md) | Production setup |
+| 💻 [Development](docs/06-DEVELOPMENT/README.md) | Developer guides |
+| ⚙️ [Operations](docs/07-OPERATIONS/README.md) | Platform operations |
+| 🔄 [Migration](docs/08-MIGRATION/README.md) | Data migration guides |
+| 📜 [Project History](docs/09-PROJECT-HISTORY/README.md) | Development history |
 
-## Code of Conduct
+**New to MDF Access?** Start with the [Project Overview →](docs/00-GETTING-STARTED/Project-Overview.md)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📊 Project Statistics
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Database
+- **57 Total Tables**
+  - 39 PMBOK tables
+  - 11 Multi-tenant tables
+  - 7 Field Maintenance tables
 
-## License
+### Code
+- **40+ Eloquent Models**
+- **50+ Migrations**
+- **16 Excel Import Classes**
+- **174 Permissions** across 29 roles
+
+### Data (from Odoo migration)
+- **58 Users**
+- **66 Projects**
+- **9,626 Tasks**
+
+### Progress
+- **Overall:** 42% complete
+- **Current Phase:** Row-Level Security (RLS) implementation
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework:** Laravel 12
+- **Language:** PHP 8.2+
+- **Frontend:** Blade + Tailwind CSS 4.0 + Vite 7.0
+- **Database:** SQLite (dev) / MySQL 8.0+ or PostgreSQL 13+ (production)
+- **Authentication:** Laravel Breeze + 2FA (Google Authenticator)
+
+**See:** [Complete Technology Stack →](docs/00-GETTING-STARTED/Technology-Stack.md)
+
+---
+
+## 🎯 Use Cases
+
+- **Construction Project Management** - Multi-phase projects with subcontractors
+- **IT Project Portfolios** - Coordinate multiple development teams
+- **Telecom Infrastructure** - Field maintenance and site management
+- **Consulting Services** - Client engagements with deliverables
+
+---
+
+## 💻 Development
+
+### Requirements
+- PHP 8.2+
+- Composer
+- Node.js 18+
+- SQLite/MySQL/PostgreSQL
+
+### Setup
+```bash
+# Clone repository
+git clone <repo-url> mdf-access
+cd mdf-access
+
+# Install and setup
+composer setup
+
+# Start development servers
+composer dev
+```
+
+### Available Commands
+```bash
+composer setup    # Install dependencies and setup
+composer dev      # Start all dev servers (Laravel, Vite, Queue, Logs)
+composer test     # Run PHPUnit tests
+```
+
+**See:** [Development Guide →](docs/06-DEVELOPMENT/README.md)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see [Contributing Guide →](docs/06-DEVELOPMENT/Contributing.md)
+
+---
+
+## 📝 License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+MDF Access is proprietary software. All rights reserved.
+
+---
+
+## 📞 Credits
+
+**Built with:**
+- [Laravel 12](https://laravel.com)
+- [Tailwind CSS 4.0](https://tailwindcss.com)
+- [Vite 7.0](https://vitejs.dev)
+
+**MDF Access** - Multi-Tenant PMBOK Project Management Platform
+
+**Version:** 1.0
+**Last Updated:** November 2025
+**Progress:** 42%
+
+---
+
+**Ready to start?** → [Quick Start Guide](docs/00-GETTING-STARTED/Quick-Start-Guide.md)
