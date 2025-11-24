@@ -27,7 +27,7 @@ Financial allocation for a project, including `total_budget`, `spent_budget`, an
 A formal request to modify project scope, timeline, or budget. Requires approval workflow.
 
 ### Client Organization
-An organization with `type = 'client'`. Clients are external organizations that sponsor or receive services from projects.
+An organization with `type = 'client'` in project_organizations pivot table. Clients are external organizations that sponsor or receive services from projects.
 
 ---
 
@@ -64,9 +64,6 @@ An Eloquent feature that automatically applies query constraints to all queries 
 
 ## I
 
-### Internal Organization
-An organization with `type = 'internal'`. SAMSIC is the internal organization that operates the platform and has **global visibility** across all tenants.
-
 ### Issue
 A problem or obstacle encountered during project execution. Issues are tracked with severity, status, and resolution.
 
@@ -97,20 +94,11 @@ An architecture pattern where a **single application instance** serves **multipl
 ## O
 
 ### Organization
-A tenant in the multi-tenant system. Organizations can be:
-- **Internal** (SAMSIC - platform operator)
-- **Client** (external organizations)
-- **Partner** (service providers)
-
-### Organization Type
-The classification of an organization: `internal`, `client`, or `partner`.
+A tenant in the multi-tenant system.
 
 ---
 
 ## P
-
-### Partner Organization
-An organization with `type = 'partner'`. Partners are external organizations that provide services or collaborate on projects.
 
 ### Permission
 A specific capability to perform an **action** on a **resource** within a **scope** (e.g., `projects.edit` at `organization` scope).
@@ -158,9 +146,6 @@ A security model that restricts database access at the **row level** based on us
 ---
 
 ## S
-
-### SAMSIC
-The **internal organization** that operates the MDF Access platform. SAMSIC users have **global visibility** and can see all organizations' data.
 
 ### Scope (Permission)
 The level at which a permission applies:

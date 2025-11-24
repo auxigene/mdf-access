@@ -21,7 +21,6 @@ MDF Access is designed to manage **complex, multi-stakeholder projects** across 
 ## 🏢 Target Users
 
 ### Organizations
-- **SAMSIC** (Internal/Platform Owner) - Full platform visibility and management
 - **Client Organizations** - Manage their own projects and teams
 - **Partner Organizations** - Collaborate on shared projects
 

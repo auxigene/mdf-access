@@ -323,15 +323,6 @@ npm install
 npm run dev
 ```
 
-### Issue: "SQLSTATE[HY000] [14] unable to open database file"
-
-**Solution:** Create SQLite database file
-
-```bash
-touch database/database.sqlite
-php artisan migrate
-```
-
 ### Issue: Vite assets not loading
 
 **Solution:** Build assets for production
@@ -374,16 +365,6 @@ php artisan ide-helper:generate
 
 # Interactive shell
 php artisan tinker
-```
-
-### Database Commands
-
-```bash
-# Export database to SQL
-sqlite3 database/database.sqlite .dump > backup.sql
-
-# Import SQL dump
-sqlite3 database/database.sqlite < backup.sql
 ```
 
 ---
