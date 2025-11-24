@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Detail - MDF Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Instrument Sans', sans-serif; }
+        .dependency-arrow { stroke: #9CA3AF; stroke-width: 2; fill: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MDF Access</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Search projects, tasks, people..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-900">John Doe</p>
+                            <p class="text-xs text-gray-500">Project Manager</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">JD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 min-h-screen">
+            <nav class="p-4 space-y-1">
+                <a href="04-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="05-portfolios.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span>Portfolios</span>
+                </a>
+
+                <a href="06-programs.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Programs</span>
+                </a>
+
+                <a href="07-projects-list.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>Projects</span>
+                </a>
+
+                <a href="10-phases-kanban.html" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-semibold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    <span>Tasks & Kanban</span>
+                </a>
+
+                <a href="12-team-members.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Team</span>
+                </a>
+
+                <a href="14-fm-sites.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Field Maintenance</span>
+                </a>
+
+                <hr class="my-4">
+
+                <a href="18-analytics.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+
+                <a href="16-admin-panel.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Administration</span>
+                </a>
+            </nav>
+
+            <div class="px-4 py-4">
+                <a href="index.html" class="flex items-center justify-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span class="text-sm">Back to Index</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+                    <a href="07-projects-list.html" class="hover:text-blue-600">Projects</a>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                    <a href="08-project-detail.html" class="hover:text-blue-600">Website Redesign 2025</a>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                    <a href="10-phases-kanban.html" class="hover:text-blue-600">Planning Phase</a>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                    <span class="text-gray-900 font-semibold">Task #PLN-003</span>
+                </div>
+
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h2 class="text-3xl font-bold text-gray-900">Requirements Gathering</h2>
+                            <span class="px-3 py-1 bg-orange-100 text-orange-700 text-sm font-semibold rounded-full">High Priority</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">In Progress</span>
+                        </div>
+                        <p class="text-gray-600">Collect detailed requirements from all stakeholders for the redesign project</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-semibold">
+                            Edit
+                        </button>
+                        <button class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-800">
+                            Mark Complete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Content Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Task Details Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Task Details</h3>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Assignee</label>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">TK</div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">Tanya Kim</p>
+                                        <p class="text-xs text-gray-500">Senior Business Analyst</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Due Date</label>
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-900 font-semibold">December 10, 2025</span>
+                                    <span class="text-sm text-orange-600 font-semibold">(5 days left)</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Created By</label>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">JD</div>
+                                    <span class="text-gray-900">John Doe</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Created Date</label>
+                                <p class="text-gray-900">November 15, 2025</p>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Priority</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option>Critical</option>
+                                    <option selected>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Status</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option>Not Started</option>
+                                    <option selected>In Progress</option>
+                                    <option>On Hold</option>
+                                    <option>Completed</option>
+                                </select>
+                            </div>
+
+                            <div class="col-span-2">
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Tags</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full">requirements</span>
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full">stakeholder</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full">planning</span>
+                                    <button class="px-3 py-1 border border-gray-300 text-gray-600 text-sm rounded-full hover:bg-gray-50">+ Add Tag</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Description</h3>
+                        <div class="prose max-w-none text-gray-700">
+                            <p class="mb-4">
+                                Conduct comprehensive requirements gathering sessions with all key stakeholders to understand their needs and expectations for the website redesign project.
+                            </p>
+                            <p class="mb-4 font-semibold">Key Objectives:</p>
+                            <ul class="list-disc pl-6 mb-4 space-y-1">
+                                <li>Interview department heads and team leads</li>
+                                <li>Document functional and non-functional requirements</li>
+                                <li>Identify pain points with current website</li>
+                                <li>Gather user feedback and analytics</li>
+                                <li>Define success metrics and KPIs</li>
+                            </ul>
+                            <p class="mb-4 font-semibold">Deliverables:</p>
+                            <ul class="list-disc pl-6 space-y-1">
+                                <li>Requirements specification document</li>
+                                <li>Stakeholder interview notes</li>
+                                <li>User personas and journey maps</li>
+                                <li>Feature prioritization matrix</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Dependencies -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Dependencies</h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">Blocked By</h4>
+                                <div class="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-purple-100 rounded flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 text-sm">#INIT-002: Stakeholder Identification</p>
+                                                <p class="text-xs text-gray-500">Initiation Phase</p>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded">Completed</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">Blocks</h4>
+                                <div class="space-y-2">
+                                    <div class="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="font-semibold text-gray-900 text-sm">#PLN-004: Create WBS</p>
+                                                    <p class="text-xs text-gray-500">Planning Phase</p>
+                                                </div>
+                                            </div>
+                                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded">Waiting</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="font-semibold text-gray-900 text-sm">#EXE-001: Design System Setup</p>
+                                                    <p class="text-xs text-gray-500">Execution Phase</p>
+                                                </div>
+                                            </div>
+                                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded">Waiting</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtasks -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">Subtasks</h3>
+                            <button class="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-semibold flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Add Subtask</span>
+                            </button>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                <span>Progress</span>
+                                <span class="font-semibold">5 of 8 completed (62.5%)</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 62.5%"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-400 line-through">Schedule stakeholder interviews</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-indigo-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">TK</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-400 line-through">Prepare interview questions and templates</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">AM</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-400 line-through">Conduct executive stakeholder interviews</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-indigo-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">TK</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-400 line-through">Conduct department lead interviews</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-indigo-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">TK</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-400 line-through">Review existing analytics and user feedback</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">SK</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg cursor-pointer border-2 border-blue-200">
+                                <input type="checkbox" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-900 font-semibold">Compile requirements specification document</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-indigo-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">TK</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-900">Create user personas and journey maps</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-pink-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">LM</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                                <span class="flex-1 text-gray-900">Present findings to project team</span>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-indigo-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">TK</div>
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">JD</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Comments</h3>
+
+                        <div class="mb-6">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">JD</div>
+                                <div class="flex-1">
+                                    <textarea rows="3" placeholder="Add a comment..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="p-2 text-gray-500 hover:bg-gray-100 rounded">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="p-2 text-gray-500 hover:bg-gray-100 rounded">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">
+                                            Comment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Comment 1 -->
+                            <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                                <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">TK</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="font-semibold text-gray-900">Tanya Kim</span>
+                                        <span class="text-xs text-gray-500">2 hours ago</span>
+                                    </div>
+                                    <p class="text-gray-700 mb-2">I've completed 5 out of 8 stakeholder interviews. The feedback has been very positive so far. Most stakeholders are emphasizing the need for better mobile responsiveness and faster page load times.</p>
+                                    <div class="flex items-center space-x-3 text-sm">
+                                        <button class="text-gray-500 hover:text-blue-600">Reply</button>
+                                        <button class="text-gray-500 hover:text-blue-600">Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment 2 -->
+                            <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                                <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">JD</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="font-semibold text-gray-900">John Doe</span>
+                                        <span class="text-xs text-gray-500">5 hours ago</span>
+                                    </div>
+                                    <p class="text-gray-700 mb-2">Great progress Tanya! Make sure to document any technical constraints they mention. We'll need that info for the design phase.</p>
+                                    <div class="flex items-center space-x-3 text-sm">
+                                        <button class="text-gray-500 hover:text-blue-600">Reply</button>
+                                        <button class="text-gray-500 hover:text-blue-600">Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment 3 -->
+                            <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">AM</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="font-semibold text-gray-900">Alice Martinez</span>
+                                        <span class="text-xs text-gray-500">Yesterday</span>
+                                    </div>
+                                    <p class="text-gray-700 mb-2">I've attached the interview template and questionnaire we prepared. Feel free to adapt it based on the stakeholder's role.</p>
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <div class="flex items-center space-x-2 px-3 py-2 bg-white border border-gray-200 rounded text-sm">
+                                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                            </svg>
+                                            <span>interview-template.docx</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-3 text-sm">
+                                        <button class="text-gray-500 hover:text-blue-600">Reply</button>
+                                        <button class="text-gray-500 hover:text-blue-600">Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Attachments -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">Attachments</h3>
+                            <button class="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-semibold flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Upload</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer">
+                                <div class="w-10 h-10 bg-blue-100 rounded flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-900 text-sm truncate">interview-template.docx</p>
+                                    <p class="text-xs text-gray-500">24 KB • 2 days ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer">
+                                <div class="w-10 h-10 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-900 text-sm truncate">stakeholder-notes.xlsx</p>
+                                    <p class="text-xs text-gray-500">156 KB • 1 day ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer">
+                                <div class="w-10 h-10 bg-red-100 rounded flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-900 text-sm truncate">requirements-draft-v1.pdf</p>
+                                    <p class="text-xs text-gray-500">2.3 MB • 5 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer">
+                                <div class="w-10 h-10 bg-purple-100 rounded flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-900 text-sm truncate">wireframe-mockup.png</p>
+                                    <p class="text-xs text-gray-500">845 KB • 3 hours ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Column -->
+                <div class="space-y-6">
+                    <!-- Time Tracking -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Time Tracking</h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Estimated Time</label>
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-gray-900 font-semibold">40 hours</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Time Logged</label>
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-gray-900 font-semibold">24.5 hours</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-gray-700 mb-1 block">Remaining</label>
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-gray-900 font-semibold">15.5 hours</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2">
+                                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                    <span>Progress</span>
+                                    <span class="font-semibold">61%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 61%"></div>
+                                </div>
+                            </div>
+
+                            <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Log Time</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Activity Timeline -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Activity Timeline</h3>
+
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>Tanya Kim</strong> added 3 attachments</p>
+                                    <p class="text-xs text-gray-500">2 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>Tanya Kim</strong> completed subtask "Conduct department lead interviews"</p>
+                                    <p class="text-xs text-gray-500">3 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>John Doe</strong> commented</p>
+                                    <p class="text-xs text-gray-500">5 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>Tanya Kim</strong> logged 4 hours</p>
+                                    <p class="text-xs text-gray-500">6 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>John Doe</strong> changed priority from Medium to High</p>
+                                    <p class="text-xs text-gray-500">Yesterday</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>John Doe</strong> assigned to Tanya Kim</p>
+                                    <p class="text-xs text-gray-500">2 days ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900"><strong>John Doe</strong> created this task</p>
+                                    <p class="text-xs text-gray-500">Nov 15, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Tasks -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Related Tasks</h3>
+
+                        <div class="space-y-3">
+                            <a href="#" class="block p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">#PLN-002: Stakeholder Analysis</span>
+                                    <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">Done</span>
+                                </div>
+                                <p class="text-xs text-gray-500">Planning Phase</p>
+                            </a>
+
+                            <a href="#" class="block p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">#PLN-004: Create WBS</span>
+                                    <span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded">Todo</span>
+                                </div>
+                                <p class="text-xs text-gray-500">Planning Phase</p>
+                            </a>
+
+                            <a href="#" class="block p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">#EXE-001: Design System</span>
+                                    <span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded">Todo</span>
+                                </div>
+                                <p class="text-xs text-gray-500">Execution Phase</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

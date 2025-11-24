@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication - MDF Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Instrument Sans', sans-serif; }
+        .code-input { width: 3rem; height: 3.5rem; font-size: 1.5rem; text-align: center; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-white to-blue-50 min-h-screen flex items-center justify-center p-4">
+
+    <a href="index.html" class="absolute top-6 left-6 flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Index
+    </a>
+
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="inline-flex w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Two-Factor Authentication</h1>
+            <p class="text-gray-600">Enter the 6-digit code from your authenticator app</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
+            <form class="space-y-6">
+                <!-- User Info -->
+                <div class="bg-purple-50 rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span class="text-white font-semibold">JD</span>
+                    </div>
+                    <p class="font-semibold text-gray-900">john.doe@example.com</p>
+                </div>
+
+                <!-- Code Input -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-4 text-center">Enter Verification Code</label>
+                    <div class="flex justify-center gap-2">
+                        <input type="text" maxlength="1" value="4" class="code-input border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-gray-900">
+                        <input type="text" maxlength="1" value="2" class="code-input border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-gray-900">
+                        <input type="text" maxlength="1" value="7" class="code-input border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-gray-900">
+                        <input type="text" maxlength="1" value="9" class="code-input border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-gray-900">
+                        <input type="text" maxlength="1" value="3" class="code-input border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-gray-900">
+                        <input type="text" maxlength="1" value="1" class="code-input border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-gray-900">
+                    </div>
+                </div>
+
+                <!-- Trust Device -->
+                <div class="flex items-center justify-center">
+                    <input type="checkbox" id="trust" class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                    <label for="trust" class="ml-2 text-sm text-gray-700">Trust this device for 30 days</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+                    Verify & Continue
+                </button>
+
+                <!-- Alternative Methods -->
+                <div class="text-center">
+                    <button type="button" class="text-sm text-purple-600 hover:text-purple-700 font-semibold">
+                        Use backup code instead
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- QR Code Setup (for new users) -->
+        <div class="mt-6 bg-white rounded-xl border border-gray-200 p-6">
+            <h3 class="font-semibold text-gray-900 mb-3 text-center">Setting up 2FA?</h3>
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-32 h-32 bg-gray-100 border-2 border-gray-300 rounded-lg flex items-center justify-center">
+                    <svg class="w-24 h-24 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center mb-2">Scan this QR code with Google Authenticator</p>
+            <p class="text-xs text-gray-500 text-center font-mono bg-gray-50 px-3 py-2 rounded">JBSWY3DPEHPK3PXP</p>
+        </div>
+
+        <!-- Supported Apps -->
+        <div class="mt-6 grid grid-cols-3 gap-4">
+            <div class="text-center">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <span class="text-xs font-bold text-blue-600">G</span>
+                </div>
+                <p class="text-xs text-gray-600">Google Auth</p>
+            </div>
+            <div class="text-center">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <span class="text-xs font-bold text-orange-600">A</span>
+                </div>
+                <p class="text-xs text-gray-600">Authy</p>
+            </div>
+            <div class="text-center">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <span class="text-xs font-bold text-green-600">M</span>
+                </div>
+                <p class="text-xs text-gray-600">Microsoft</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

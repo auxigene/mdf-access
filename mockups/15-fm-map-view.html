@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Maintenance Map View - MDF Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Instrument Sans', sans-serif; }
+
+        /* Map Container Styles */
+        .map-container {
+            position: relative;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+            overflow: hidden;
+        }
+
+        /* Grid pattern overlay for map effect */
+        .map-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+        }
+
+        /* Site Markers */
+        .site-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .site-marker:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            z-index: 20;
+        }
+
+        .site-marker::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(2);
+            }
+        }
+
+        /* Cluster Markers */
+        .cluster-marker {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 15;
+        }
+
+        .cluster-marker:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        /* Site Detail Popup */
+        .site-popup {
+            position: absolute;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 16px;
+            min-width: 280px;
+            z-index: 30;
+            display: none;
+        }
+
+        .site-popup.active {
+            display: block;
+        }
+
+        /* Simulated map regions */
+        .map-region {
+            position: absolute;
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MDF Access</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Search sites, locations, tenants..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-900">John Doe</p>
+                            <p class="text-xs text-gray-500">Field Manager</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">JD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex h-screen">
+        <!-- Sidebar with Filters -->
+        <aside class="w-80 bg-white border-r border-gray-200 overflow-y-auto">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Map View</h2>
+                    <a href="14-fm-sites.html" class="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                        <span>List View</span>
+                    </a>
+                </div>
+                <p class="text-sm text-gray-600">Filter and explore field maintenance sites</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="p-6 border-b border-gray-200 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600">Total Sites</span>
+                    <span class="text-lg font-bold text-gray-900">142</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600">Visible on Map</span>
+                    <span class="text-lg font-bold text-blue-600">142</span>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="p-6 space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Region</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Northern <span class="text-gray-500">(28)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Eastern <span class="text-gray-500">(35)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Southern <span class="text-gray-500">(31)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Western <span class="text-gray-500">(26)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Central <span class="text-gray-500">(22)</span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Status</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Operational <span class="text-gray-500">(118)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Maintenance Due <span class="text-gray-500">(18)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Under Maintenance <span class="text-gray-500">(6)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Offline <span class="text-gray-500">(6)</span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Site Class</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">GSM Tower <span class="text-gray-500">(82)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Colocation Facility <span class="text-gray-500">(34)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Data Center <span class="text-gray-500">(15)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Edge Site <span class="text-gray-500">(11)</span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Energy Source</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Grid Power <span class="text-gray-500">(89)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Solar <span class="text-gray-500">(45)</span></span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm text-gray-700">Generator <span class="text-gray-500">(8)</span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
+                    Reset Filters
+                </button>
+            </div>
+
+            <!-- Legend -->
+            <div class="p-6 border-t border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">Legend</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                        <span class="text-sm text-gray-700">Operational</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-4 h-4 bg-orange-500 rounded-full"></div>
+                        <span class="text-sm text-gray-700">Maintenance Due</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-4 h-4 bg-yellow-500 rounded-full"></div>
+                        <span class="text-sm text-gray-700">Under Maintenance</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-4 h-4 bg-red-500 rounded-full"></div>
+                        <span class="text-sm text-gray-700">Offline</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">12</div>
+                        <span class="text-sm text-gray-700">Cluster (multiple sites)</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Map Area -->
+        <main class="flex-1 relative">
+            <!-- Map Controls -->
+            <div class="absolute top-6 right-6 z-40 space-y-2">
+                <button class="w-10 h-10 bg-white border border-gray-300 rounded-lg shadow-lg hover:bg-gray-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </button>
+                <button class="w-10 h-10 bg-white border border-gray-300 rounded-lg shadow-lg hover:bg-gray-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                    </svg>
+                </button>
+                <button class="w-10 h-10 bg-white border border-gray-300 rounded-lg shadow-lg hover:bg-gray-50 flex items-center justify-center mt-4">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-container w-full h-full">
+                <!-- Simulated Region Overlays -->
+                <div class="map-region" style="top: 10%; left: 15%; width: 25%; height: 30%;"></div>
+                <div class="map-region" style="top: 15%; right: 20%; width: 28%; height: 32%;"></div>
+                <div class="map-region" style="bottom: 15%; left: 20%; width: 30%; height: 28%;"></div>
+                <div class="map-region" style="bottom: 20%; right: 15%; width: 26%; height: 25%;"></div>
+                <div class="map-region" style="top: 35%; left: 35%; width: 22%; height: 24%;"></div>
+
+                <!-- Individual Site Markers -->
+                <!-- Operational Sites (Green) -->
+                <div class="site-marker" style="top: 25%; left: 22%;" onclick="showSitePopup(event, 'GSM-N-001')">
+                    <div class="w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 45%; left: 48%;" onclick="showSitePopup(event, 'DC-C-015')">
+                    <div class="w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 32%; left: 68%;" onclick="showSitePopup(event, 'COL-E-042')">
+                    <div class="w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 62%; left: 42%;" onclick="showSitePopup(event, 'GSM-C-054')">
+                    <div class="w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 18%; left: 35%;" onclick="showSitePopup(event, 'COL-N-033')">
+                    <div class="w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Maintenance Due Sites (Orange) -->
+                <div class="site-marker" style="top: 28%; left: 75%;" onclick="showSitePopup(event, 'SITE-MAINT-1')">
+                    <div class="w-10 h-10 bg-orange-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 68%; left: 32%;" onclick="showSitePopup(event, 'GSM-S-167')">
+                    <div class="w-10 h-10 bg-orange-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 52%; left: 18%;" onclick="showSitePopup(event, 'EDGE-W-201')">
+                    <div class="w-10 h-10 bg-orange-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Under Maintenance (Yellow) -->
+                <div class="site-marker" style="top: 58%; left: 25%;" onclick="showSitePopup(event, 'GSM-W-089')">
+                    <div class="w-10 h-10 bg-yellow-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Offline Sites (Red) -->
+                <div class="site-marker" style="top: 42%; left: 72%;" onclick="showSitePopup(event, 'GSM-E-075')">
+                    <div class="w-10 h-10 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="site-marker" style="top: 75%; left: 65%;" onclick="showSitePopup(event, 'SITE-OFF-1')">
+                    <div class="w-10 h-10 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Cluster Markers -->
+                <div class="cluster-marker" style="top: 38%; left: 82%;" onclick="alert('Zoom in to see 8 sites in this cluster')">
+                    <div class="w-14 h-14 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <span class="text-white text-lg font-bold">8</span>
+                    </div>
+                </div>
+
+                <div class="cluster-marker" style="top: 72%; left: 52%;" onclick="alert('Zoom in to see 5 sites in this cluster')">
+                    <div class="w-14 h-14 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <span class="text-white text-lg font-bold">5</span>
+                    </div>
+                </div>
+
+                <div class="cluster-marker" style="top: 15%; left: 55%;" onclick="alert('Zoom in to see 12 sites in this cluster')">
+                    <div class="w-14 h-14 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <span class="text-white text-lg font-bold">12</span>
+                    </div>
+                </div>
+
+                <!-- Site Detail Popup (Hidden by default) -->
+                <div id="sitePopup" class="site-popup" style="top: 20%; left: 25%;">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900" id="popupSiteCode">GSM-N-001</h3>
+                            <p class="text-sm text-gray-600" id="popupSiteName">Kampala Central Tower</p>
+                        </div>
+                        <button onclick="hideSitePopup()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Status:</span>
+                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full" id="popupStatus">Operational</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Location:</span>
+                            <span class="font-semibold text-gray-900" id="popupLocation">Northern</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Site Class:</span>
+                            <span class="font-semibold text-gray-900" id="popupClass">GSM Tower</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Tenants:</span>
+                            <span class="font-semibold text-gray-900" id="popupTenants">3</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Last Maintenance:</span>
+                            <span class="font-semibold text-gray-900" id="popupMaintenance">2025-10-15</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Energy Source:</span>
+                            <span class="font-semibold text-gray-900" id="popupEnergy">Grid + Solar</span>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold">
+                            View Details
+                        </button>
+                        <button class="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-semibold">
+                            Directions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Info Bar -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4 z-40">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <div class="text-sm">
+                            <span class="text-gray-600">Zoom Level:</span>
+                            <span class="font-semibold text-gray-900 ml-2">12</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="text-gray-600">Center:</span>
+                            <span class="font-semibold text-gray-900 ml-2">0.3476° N, 32.5825° E</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-semibold">
+                            Export View
+                        </button>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold">
+                            Schedule Visit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Site data repository
+        const siteData = {
+            'GSM-N-001': {
+                name: 'Kampala Central Tower',
+                status: 'Operational',
+                statusClass: 'bg-green-100 text-green-700',
+                location: 'Northern',
+                class: 'GSM Tower',
+                tenants: 3,
+                maintenance: '2025-10-15',
+                energy: 'Grid + Solar'
+            },
+            'COL-E-042': {
+                name: 'Entebbe Colocation Hub',
+                status: 'Operational',
+                statusClass: 'bg-green-100 text-green-700',
+                location: 'Eastern',
+                class: 'Colocation Facility',
+                tenants: 8,
+                maintenance: '2025-06-20',
+                energy: 'Grid + Backup'
+            },
+            'DC-C-015': {
+                name: 'Nakasero Data Center',
+                status: 'Operational',
+                statusClass: 'bg-green-100 text-green-700',
+                location: 'Central',
+                class: 'Data Center',
+                tenants: 12,
+                maintenance: '2025-11-01',
+                energy: 'Grid + UPS'
+            },
+            'GSM-C-054': {
+                name: 'Masaka Central Tower',
+                status: 'Operational',
+                statusClass: 'bg-green-100 text-green-700',
+                location: 'Central',
+                class: 'GSM Tower',
+                tenants: 3,
+                maintenance: '2025-11-05',
+                energy: 'Grid + Backup'
+            },
+            'COL-N-033': {
+                name: 'Gulu Regional Hub',
+                status: 'Operational',
+                statusClass: 'bg-green-100 text-green-700',
+                location: 'Northern',
+                class: 'Colocation Facility',
+                tenants: 5,
+                maintenance: '2025-10-28',
+                energy: 'Grid + Solar'
+            },
+            'SITE-MAINT-1': {
+                name: 'Eastern Tower A24',
+                status: 'Maintenance Due',
+                statusClass: 'bg-orange-100 text-orange-700',
+                location: 'Eastern',
+                class: 'GSM Tower',
+                tenants: 2,
+                maintenance: '2025-06-15',
+                energy: 'Solar + Battery'
+            },
+            'GSM-S-167': {
+                name: 'Rukungiri Rural Tower',
+                status: 'Maintenance Due',
+                statusClass: 'bg-orange-100 text-orange-700',
+                location: 'Southern',
+                class: 'GSM Tower',
+                tenants: 1,
+                maintenance: '2025-07-22',
+                energy: 'Solar'
+            },
+            'EDGE-W-201': {
+                name: 'Fort Portal Edge Site',
+                status: 'Maintenance Due',
+                statusClass: 'bg-orange-100 text-orange-700',
+                location: 'Western',
+                class: 'Edge Site',
+                tenants: 1,
+                maintenance: '2025-05-10',
+                energy: 'Solar + Battery'
+            },
+            'GSM-W-089': {
+                name: 'Kabale West Tower',
+                status: 'Under Maintenance',
+                statusClass: 'bg-yellow-100 text-yellow-700',
+                location: 'Western',
+                class: 'GSM Tower',
+                tenants: 1,
+                maintenance: '2025-11-22',
+                energy: 'Generator'
+            },
+            'GSM-E-075': {
+                name: 'Jinja Industrial Tower',
+                status: 'Offline',
+                statusClass: 'bg-red-100 text-red-700',
+                location: 'Eastern',
+                class: 'GSM Tower',
+                tenants: 4,
+                maintenance: '2025-08-18',
+                energy: 'Grid'
+            },
+            'SITE-OFF-1': {
+                name: 'Southern Site B12',
+                status: 'Offline',
+                statusClass: 'bg-red-100 text-red-700',
+                location: 'Southern',
+                class: 'GSM Tower',
+                tenants: 2,
+                maintenance: '2025-09-05',
+                energy: 'Grid'
+            }
+        };
+
+        function showSitePopup(event, siteCode) {
+            const popup = document.getElementById('sitePopup');
+            const site = siteData[siteCode];
+
+            if (!site) return;
+
+            // Update popup content
+            document.getElementById('popupSiteCode').textContent = siteCode;
+            document.getElementById('popupSiteName').textContent = site.name;
+            document.getElementById('popupStatus').textContent = site.status;
+            document.getElementById('popupStatus').className = 'px-2 py-1 text-xs font-semibold rounded-full ' + site.statusClass;
+            document.getElementById('popupLocation').textContent = site.location;
+            document.getElementById('popupClass').textContent = site.class;
+            document.getElementById('popupTenants').textContent = site.tenants;
+            document.getElementById('popupMaintenance').textContent = site.maintenance;
+            document.getElementById('popupEnergy').textContent = site.energy;
+
+            // Position popup near the marker
+            const marker = event.currentTarget;
+            const rect = marker.getBoundingClientRect();
+            const mapContainer = marker.closest('.map-container');
+            const mapRect = mapContainer.getBoundingClientRect();
+
+            const popupLeft = rect.left - mapRect.left + rect.width + 20;
+            const popupTop = rect.top - mapRect.top - 50;
+
+            popup.style.left = popupLeft + 'px';
+            popup.style.top = popupTop + 'px';
+            popup.classList.add('active');
+        }
+
+        function hideSitePopup() {
+            const popup = document.getElementById('sitePopup');
+            popup.classList.remove('active');
+        }
+
+        // Close popup when clicking outside
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('sitePopup');
+            const isMarker = event.target.closest('.site-marker');
+            const isPopup = event.target.closest('.site-popup');
+
+            if (!isMarker && !isPopup && popup.classList.contains('active')) {
+                hideSitePopup();
+            }
+        });
+    </script>
+
+</body>
+</html>

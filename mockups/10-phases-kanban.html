@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks & Kanban - MDF Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Instrument Sans', sans-serif; }
+        .kanban-column { min-width: 320px; max-width: 320px; }
+        .task-card { cursor: grab; }
+        .task-card:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MDF Access</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Search projects, tasks, people..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-900">John Doe</p>
+                            <p class="text-xs text-gray-500">Project Manager</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">JD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 min-h-screen">
+            <nav class="p-4 space-y-1">
+                <a href="04-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="05-portfolios.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span>Portfolios</span>
+                </a>
+
+                <a href="06-programs.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Programs</span>
+                </a>
+
+                <a href="07-projects-list.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>Projects</span>
+                </a>
+
+                <a href="10-phases-kanban.html" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-semibold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    <span>Tasks & Kanban</span>
+                </a>
+
+                <a href="12-team-members.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Team</span>
+                </a>
+
+                <a href="14-fm-sites.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Field Maintenance</span>
+                </a>
+
+                <hr class="my-4">
+
+                <a href="18-analytics.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+
+                <a href="16-admin-panel.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Administration</span>
+                </a>
+            </nav>
+
+            <div class="px-4 py-4">
+                <a href="index.html" class="flex items-center justify-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span class="text-sm">Back to Index</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">Website Redesign 2025</h2>
+                        <p class="text-gray-600 mt-1">PMBOK Waterfall Project - Tasks & Kanban Board</p>
+                    </div>
+                    <button class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-800 shadow-sm flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        <span>Add Task</span>
+                    </button>
+                </div>
+
+                <!-- Filters and Search -->
+                <div class="flex items-center space-x-4 bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="flex-1 relative">
+                        <input type="text" placeholder="Search tasks..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>All Assignees</option>
+                        <option>John Doe</option>
+                        <option>Alice Martinez</option>
+                        <option>Sam Kim</option>
+                        <option>Unassigned</option>
+                    </select>
+
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>All Priorities</option>
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                        </svg>
+                        <span class="text-gray-700">More Filters</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="flex space-x-4 overflow-x-auto pb-4">
+                <!-- Initiation Phase -->
+                <div class="kanban-column bg-gray-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-900">Initiation</h3>
+                            <span class="px-2 py-1 bg-white text-gray-600 text-xs font-semibold rounded">4</span>
+                        </div>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progress</span>
+                            <span class="font-semibold">75%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-1.5">
+                            <div class="bg-purple-500 h-1.5 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Task Card 1 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Project Charter Development</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-semibold rounded">Critical</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Define project scope and objectives</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">JD</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-orange-600 font-semibold">Dec 1</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span>3 subtasks</span>
+                                <svg class="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                                </svg>
+                                <span>2</span>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Stakeholder Identification</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">Low</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Map all project stakeholders</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">AM</div>
+                                    <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">SK</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Dec 5</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>5/5 done</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planning Phase -->
+                <div class="kanban-column bg-gray-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-900">Planning</h3>
+                            <span class="px-2 py-1 bg-white text-gray-600 text-xs font-semibold rounded">7</span>
+                        </div>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progress</span>
+                            <span class="font-semibold">45%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-1.5">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 45%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Task Card 1 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Requirements Gathering</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded">High</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Collect detailed requirements from stakeholders</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-indigo-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">TK</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Dec 10</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span>8 subtasks</span>
+                                <svg class="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                </svg>
+                                <span>4</span>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Create WBS</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">Medium</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Develop Work Breakdown Structure</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">JD</div>
+                                    <div class="w-6 h-6 bg-teal-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">MW</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Dec 12</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 3 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Resource Planning</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">Medium</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Allocate resources and budget</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-gray-400 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">?</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Dec 15</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <span class="text-orange-600">Unassigned</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution Phase -->
+                <div class="kanban-column bg-gray-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-900">Execution</h3>
+                            <span class="px-2 py-1 bg-white text-gray-600 text-xs font-semibold rounded">5</span>
+                        </div>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progress</span>
+                            <span class="font-semibold">30%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-1.5">
+                            <div class="bg-green-500 h-1.5 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Task Card 1 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Design System Setup</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded">High</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Create component library and style guide</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-pink-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">LM</div>
+                                    <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">AM</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Dec 20</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                <span>Blocked by Planning/001</span>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Frontend Development</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded">High</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Build responsive UI components</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">SK</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Jan 15</span>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                    <span>Subtasks</span>
+                                    <span>3/12</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1">
+                                    <div class="bg-green-500 h-1 rounded-full" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Phase -->
+                <div class="kanban-column bg-gray-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-900">Monitoring</h3>
+                            <span class="px-2 py-1 bg-white text-gray-600 text-xs font-semibold rounded">3</span>
+                        </div>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progress</span>
+                            <span class="font-semibold">60%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-1.5">
+                            <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Task Card 1 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Performance Testing</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">Medium</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Run load and stress tests</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">RJ</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Jan 25</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>4h logged</span>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Quality Assurance</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded">High</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Review code quality and standards</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-teal-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">MW</div>
+                                    <div class="w-6 h-6 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">CN</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Feb 1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Closure Phase -->
+                <div class="kanban-column bg-gray-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-900">Closure</h3>
+                            <span class="px-2 py-1 bg-white text-gray-600 text-xs font-semibold rounded">2</span>
+                        </div>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progress</span>
+                            <span class="font-semibold">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-1.5">
+                            <div class="bg-gray-500 h-1.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Task Card 1 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Final Documentation</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">Low</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Complete all project documentation</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">JD</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Feb 20</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="task-card bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm flex-1">Project Review Meeting</h4>
+                                <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">Medium</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mb-3">Conduct lessons learned session</p>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">JD</div>
+                                    <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">AM</div>
+                                    <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">SK</div>
+                                    <div class="w-6 h-6 bg-gray-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">+3</div>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-600">Feb 28</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span class="text-sm font-semibold text-gray-700">Initiation</span>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900">4</p>
+                    <p class="text-xs text-gray-500">75% complete</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span class="text-sm font-semibold text-gray-700">Planning</span>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900">7</p>
+                    <p class="text-xs text-gray-500">45% complete</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-sm font-semibold text-gray-700">Execution</span>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900">5</p>
+                    <p class="text-xs text-gray-500">30% complete</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <span class="text-sm font-semibold text-gray-700">Monitoring</span>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900">3</p>
+                    <p class="text-xs text-gray-500">60% complete</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                        <span class="text-sm font-semibold text-gray-700">Closure</span>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900">2</p>
+                    <p class="text-xs text-gray-500">0% complete</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Basic drag and drop functionality placeholder
+        console.log('Kanban board loaded. Drag and drop functionality would be implemented here.');
+    </script>
+
+</body>
+</html>

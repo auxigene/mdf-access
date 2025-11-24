@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - MDF Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Instrument Sans', sans-serif; }
+        .chart-bar {
+            transition: all 0.3s ease;
+        }
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MDF Access</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Search projects, tasks, people..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-900">John Doe</p>
+                            <p class="text-xs text-gray-500">Project Manager</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">JD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 min-h-screen">
+            <nav class="p-4 space-y-1">
+                <a href="04-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="05-portfolios.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span>Portfolios</span>
+                </a>
+
+                <a href="06-programs.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Programs</span>
+                </a>
+
+                <a href="07-projects-list.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>Projects</span>
+                </a>
+
+                <a href="10-phases-kanban.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    <span>Tasks & Kanban</span>
+                </a>
+
+                <a href="12-team-members.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Team</span>
+                </a>
+
+                <a href="14-fm-sites.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Field Maintenance</span>
+                </a>
+
+                <hr class="my-4">
+
+                <a href="18-analytics.html" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-semibold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+
+                <a href="16-admin-panel.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Administration</span>
+                </a>
+            </nav>
+
+            <div class="px-4 py-4">
+                <a href="index.html" class="flex items-center justify-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span class="text-sm">Back to Index</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Analytics Dashboard</h2>
+                        <p class="text-gray-600">Comprehensive insights into project performance, budgets, and resource utilization.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <select class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                            <option>Last 6 Months</option>
+                            <option>Last Year</option>
+                            <option>Custom Range...</option>
+                        </select>
+                        <button class="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            <span>Export Report</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-6 rounded-xl shadow-lg text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-blue-100 text-sm font-semibold">+15% vs last month</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">$2.4M</h3>
+                    <p class="text-blue-100 text-sm">Total Budget Allocated</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-500 to-green-700 p-6 rounded-xl shadow-lg text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-green-100 text-sm font-semibold">92% on track</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">68%</h3>
+                    <p class="text-green-100 text-sm">Average Completion Rate</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-500 to-orange-700 p-6 rounded-xl shadow-lg text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-orange-100 text-sm font-semibold">-3 days avg</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">24</h3>
+                    <p class="text-orange-100 text-sm">Active Projects</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-500 to-purple-700 p-6 rounded-xl shadow-lg text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-purple-100 text-sm font-semibold">78% utilized</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">142</h3>
+                    <p class="text-purple-100 text-sm">Team Members</p>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Project Performance Bar Chart -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Project Performance</h3>
+                        <select class="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500">
+                            <option>This Quarter</option>
+                            <option>Last Quarter</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end justify-between h-64 space-x-3">
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg chart-bar" style="height: 85%"></div>
+                            <span class="text-xs text-gray-600 mt-2 font-semibold">85%</span>
+                            <span class="text-xs text-gray-500 mt-1">Q1</span>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded-t-lg chart-bar" style="height: 92%"></div>
+                            <span class="text-xs text-gray-600 mt-2 font-semibold">92%</span>
+                            <span class="text-xs text-gray-500 mt-1">Q2</span>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="w-full bg-gradient-to-t from-yellow-500 to-yellow-400 rounded-t-lg chart-bar" style="height: 78%"></div>
+                            <span class="text-xs text-gray-600 mt-2 font-semibold">78%</span>
+                            <span class="text-xs text-gray-500 mt-1">Q3</span>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg chart-bar" style="height: 68%"></div>
+                            <span class="text-xs text-gray-600 mt-2 font-semibold">68%</span>
+                            <span class="text-xs text-gray-500 mt-1">Q4</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4">Average completion rate by quarter</p>
+                </div>
+
+                <!-- Budget Analytics -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Budget Analytics</h3>
+                        <span class="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full font-semibold">Under Budget</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700 font-semibold">Allocated</span>
+                                <span class="text-gray-900 font-bold">$2,400,000</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-blue-600 h-3 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700 font-semibold">Spent</span>
+                                <span class="text-gray-900 font-bold">$1,850,000</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-green-600 h-3 rounded-full" style="width: 77%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700 font-semibold">Committed</span>
+                                <span class="text-gray-900 font-bold">$420,000</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-yellow-600 h-3 rounded-full" style="width: 17.5%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700 font-semibold">Available</span>
+                                <span class="text-gray-900 font-bold">$130,000</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-purple-600 h-3 rounded-full" style="width: 5.5%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
+                        <div>
+                            <p class="text-xs text-gray-600">Burn Rate</p>
+                            <p class="text-xl font-bold text-gray-900">$308K<span class="text-sm text-gray-600">/month</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600">Runway</p>
+                            <p class="text-xl font-bold text-gray-900">4.2<span class="text-sm text-gray-600"> months</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Timeline vs Actual -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Timeline vs Actual</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700">Website Redesign</span>
+                                <span class="text-green-600 font-semibold">+2 days</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <div class="flex-1 bg-gray-200 rounded-full h-2"></div>
+                                <div class="flex-1 bg-green-500 rounded-full h-2"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>Planned</span>
+                                <span>Actual</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700">Mobile App Dev</span>
+                                <span class="text-red-600 font-semibold">-5 days</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <div class="flex-1 bg-gray-200 rounded-full h-2"></div>
+                                <div class="flex-1 bg-red-500 rounded-full h-2" style="width: 85%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>Planned</span>
+                                <span>Actual</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700">Infrastructure</span>
+                                <span class="text-blue-600 font-semibold">On time</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <div class="flex-1 bg-gray-200 rounded-full h-2"></div>
+                                <div class="flex-1 bg-blue-500 rounded-full h-2"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>Planned</span>
+                                <span>Actual</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-700">Marketing Campaign</span>
+                                <span class="text-green-600 font-semibold">+7 days</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <div class="flex-1 bg-gray-200 rounded-full h-2"></div>
+                                <div class="flex-1 bg-green-500 rounded-full h-2"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>Planned</span>
+                                <span>Actual</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Distribution Pie Chart -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Risk Distribution</h3>
+                    <div class="flex items-center justify-center mb-6">
+                        <div class="relative w-48 h-48">
+                            <!-- Pie chart represented as a circular visual -->
+                            <svg viewBox="0 0 100 100" class="transform -rotate-90">
+                                <!-- Low Risk: 45% - Green -->
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10b981" stroke-width="20"
+                                        stroke-dasharray="113 283" stroke-dashoffset="0" class="transition-all duration-300 hover:opacity-80"></circle>
+                                <!-- Medium Risk: 35% - Yellow -->
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f59e0b" stroke-width="20"
+                                        stroke-dasharray="88 283" stroke-dashoffset="-113" class="transition-all duration-300 hover:opacity-80"></circle>
+                                <!-- High Risk: 20% - Red -->
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#ef4444" stroke-width="20"
+                                        stroke-dasharray="50 283" stroke-dashoffset="-201" class="transition-all duration-300 hover:opacity-80"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-gray-900">24</div>
+                                    <div class="text-xs text-gray-600">Projects</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-700">Low Risk</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">11 (45%)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-700">Medium Risk</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">8 (35%)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-700">High Risk</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">5 (20%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performers -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Top Performers</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold">1</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">Sarah Kim</span>
+                                    <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">98%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 98%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold">2</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">Alice Martinez</span>
+                                    <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">95%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-gray-500 h-1.5 rounded-full" style="width: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold">3</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">Robert Johnson</span>
+                                    <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">93%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-orange-500 h-1.5 rounded-full" style="width: 93%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold">4</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">Lisa Morgan</span>
+                                    <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">91%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold">5</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-semibold text-gray-900">Michael Chen</span>
+                                    <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">89%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-purple-500 h-1.5 rounded-full" style="width: 89%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Utilization Line Graph -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Resource Utilization Trend</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg font-semibold">Team A</button>
+                        <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">Team B</button>
+                        <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">Team C</button>
+                    </div>
+                </div>
+                <div class="relative h-64">
+                    <!-- Y-axis labels -->
+                    <div class="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between text-xs text-gray-600">
+                        <span>100%</span>
+                        <span>75%</span>
+                        <span>50%</span>
+                        <span>25%</span>
+                        <span>0%</span>
+                    </div>
+
+                    <!-- Graph area -->
+                    <div class="absolute left-14 right-0 top-0 bottom-8">
+                        <!-- Grid lines -->
+                        <div class="absolute inset-0 flex flex-col justify-between">
+                            <div class="border-t border-gray-200"></div>
+                            <div class="border-t border-gray-200"></div>
+                            <div class="border-t border-gray-200"></div>
+                            <div class="border-t border-gray-200"></div>
+                            <div class="border-t border-gray-200"></div>
+                        </div>
+
+                        <!-- Line graph simulation -->
+                        <svg class="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
+                            <!-- Area fill -->
+                            <path d="M 0 160 L 100 140 L 200 120 L 300 110 L 400 100 L 500 90 L 600 85 L 700 80 L 800 75 L 800 200 L 0 200 Z"
+                                  fill="url(#gradient)" opacity="0.3"/>
+                            <!-- Line -->
+                            <path d="M 0 160 L 100 140 L 200 120 L 300 110 L 400 100 L 500 90 L 600 85 L 700 80 L 800 75"
+                                  fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Data points -->
+                            <circle cx="0" cy="160" r="4" fill="#3b82f6"/>
+                            <circle cx="100" cy="140" r="4" fill="#3b82f6"/>
+                            <circle cx="200" cy="120" r="4" fill="#3b82f6"/>
+                            <circle cx="300" cy="110" r="4" fill="#3b82f6"/>
+                            <circle cx="400" cy="100" r="4" fill="#3b82f6"/>
+                            <circle cx="500" cy="90" r="4" fill="#3b82f6"/>
+                            <circle cx="600" cy="85" r="4" fill="#3b82f6"/>
+                            <circle cx="700" cy="80" r="4" fill="#3b82f6"/>
+                            <circle cx="800" cy="75" r="4" fill="#3b82f6"/>
+
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <!-- X-axis labels -->
+                    <div class="absolute left-14 right-0 bottom-0 flex justify-between text-xs text-gray-600">
+                        <span>Jan</span>
+                        <span>Feb</span>
+                        <span>Mar</span>
+                        <span>Apr</span>
+                        <span>May</span>
+                        <span>Jun</span>
+                        <span>Jul</span>
+                        <span>Aug</span>
+                        <span>Sep</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                        <span class="text-sm text-gray-700">Utilization Rate</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600">Current:</span>
+                        <span class="text-sm font-bold text-gray-900 ml-1">78%</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600">Target:</span>
+                        <span class="text-sm font-bold text-gray-900 ml-1">85%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Status Breakdown -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Project Status Breakdown</h3>
+                    <button class="text-sm text-blue-600 hover:text-blue-700 font-semibold">View Details →</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">12</span>
+                        </div>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">On Track</h4>
+                        <p class="text-xs text-gray-600">50% of projects</p>
+                    </div>
+                    <div class="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <div class="w-16 h-16 bg-yellow-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">7</span>
+                        </div>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">At Risk</h4>
+                        <p class="text-xs text-gray-600">29% of projects</p>
+                    </div>
+                    <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                        <div class="w-16 h-16 bg-red-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">3</span>
+                        </div>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">Delayed</h4>
+                        <p class="text-xs text-gray-600">13% of projects</p>
+                    </div>
+                    <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">2</span>
+                        </div>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">Planning</h4>
+                        <p class="text-xs text-gray-600">8% of projects</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
