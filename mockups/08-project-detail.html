@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Detail - MDF Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Instrument Sans', sans-serif; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MDF Access</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Search projects, tasks, people..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-900">John Doe</p>
+                            <p class="text-xs text-gray-500">Project Manager</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">JD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 min-h-screen">
+            <nav class="p-4 space-y-1">
+                <a href="04-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="05-portfolios.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span>Portfolios</span>
+                </a>
+
+                <a href="06-programs.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Programs</span>
+                </a>
+
+                <a href="07-projects-list.html" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-semibold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>Projects</span>
+                </a>
+
+                <a href="10-phases-kanban.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    <span>Tasks & Kanban</span>
+                </a>
+
+                <a href="12-team-members.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Team</span>
+                </a>
+
+                <a href="14-fm-sites.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Field Maintenance</span>
+                </a>
+
+                <hr class="my-4">
+
+                <a href="18-analytics.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+
+                <a href="16-admin-panel.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Administration</span>
+                </a>
+            </nav>
+
+            <div class="px-4 py-4">
+                <a href="index.html" class="flex items-center justify-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span class="text-sm">Back to Index</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Breadcrumb -->
+            <nav class="flex mb-6 text-sm">
+                <a href="07-projects-list.html" class="text-blue-600 hover:text-blue-700">Projects</a>
+                <span class="mx-2 text-gray-400">/</span>
+                <span class="text-gray-600">Website Redesign 2025</span>
+            </nav>
+
+            <!-- Project Header -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h1 class="text-3xl font-bold text-gray-900">Website Redesign 2025</h1>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">Active</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Complete redesign of corporate website with modern UI/UX and improved performance</p>
+                        <div class="flex items-center space-x-6 text-sm">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="text-gray-600">Start: Jan 1, 2025</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="text-gray-600">End: Dec 31, 2025</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                                <span class="text-gray-600">MOA - Operations</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                                <span class="text-gray-600">PMBOK Methodology</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-semibold">
+                            Edit Project
+                        </button>
+                        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
+                            Add Task
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-4 gap-4 pt-4 border-t border-gray-200">
+                    <div>
+                        <div class="text-sm text-gray-600 mb-1">Overall Progress</div>
+                        <div class="flex items-center space-x-2">
+                            <div class="text-2xl font-bold text-gray-900">68%</div>
+                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600 mb-1">Budget</div>
+                        <div class="text-2xl font-bold text-gray-900">$85K <span class="text-sm text-gray-500">/ $120K</span></div>
+                        <div class="text-xs text-gray-500">71% spent</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600 mb-1">Timeline</div>
+                        <div class="text-2xl font-bold text-gray-900">37 days</div>
+                        <div class="text-xs text-gray-500">Until deadline</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600 mb-1">Team Size</div>
+                        <div class="text-2xl font-bold text-gray-900">8 members</div>
+                        <div class="text-xs text-gray-500">3 organizations</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6">
+                        <button class="tab-active py-4 px-1 font-semibold">Overview</button>
+                        <button class="py-4 px-1 text-gray-600 hover:text-gray-900 font-semibold">Phases</button>
+                        <button class="py-4 px-1 text-gray-600 hover:text-gray-900 font-semibold">Tasks</button>
+                        <button class="py-4 px-1 text-gray-600 hover:text-gray-900 font-semibold">Team</button>
+                        <button class="py-4 px-1 text-gray-600 hover:text-gray-900 font-semibold">Deliverables</button>
+                        <button class="py-4 px-1 text-gray-600 hover:text-gray-900 font-semibold">Risks</button>
+                    </nav>
+                </div>
+
+                <!-- Overview Tab Content -->
+                <div class="p-6">
+                    <!-- PMBOK Phase Progression -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">PMBOK Phase Progression</h3>
+                        <div class="relative">
+                            <div class="flex items-center justify-between">
+                                <!-- Phase 1: Initiation -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mb-2">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="text-sm font-semibold text-gray-900">Initiation</div>
+                                    <div class="text-xs text-gray-500">Completed</div>
+                                </div>
+                                <div class="flex-1 h-1 bg-green-500 -mx-4"></div>
+
+                                <!-- Phase 2: Planning -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mb-2">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="text-sm font-semibold text-gray-900">Planning</div>
+                                    <div class="text-xs text-gray-500">Completed</div>
+                                </div>
+                                <div class="flex-1 h-1 bg-green-500 -mx-4"></div>
+
+                                <!-- Phase 3: Execution -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white mb-2 relative">
+                                        <svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="text-sm font-semibold text-blue-600">Execution</div>
+                                    <div class="text-xs text-blue-500">In Progress (68%)</div>
+                                </div>
+                                <div class="flex-1 h-1 bg-gray-300 -mx-4"></div>
+
+                                <!-- Phase 4: Monitoring -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white mb-2">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="text-sm font-semibold text-gray-400">Monitoring</div>
+                                    <div class="text-xs text-gray-400">Pending</div>
+                                </div>
+                                <div class="flex-1 h-1 bg-gray-300 -mx-4"></div>
+
+                                <!-- Phase 5: Closure -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white mb-2">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="text-sm font-semibold text-gray-400">Closure</div>
+                                    <div class="text-xs text-gray-400">Pending</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Gantt Chart Visualization -->
+                        <div class="col-span-2">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Project Timeline (Gantt View)</h3>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="space-y-3">
+                                    <!-- Timeline Header -->
+                                    <div class="flex items-center text-xs text-gray-600 font-semibold">
+                                        <div class="w-48">Phase / Task</div>
+                                        <div class="flex-1 flex justify-between px-4">
+                                            <span>Q1 2025</span>
+                                            <span>Q2 2025</span>
+                                            <span>Q3 2025</span>
+                                            <span>Q4 2025</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Initiation Phase -->
+                                    <div class="flex items-center">
+                                        <div class="w-48 text-sm font-semibold text-gray-900">Initiation</div>
+                                        <div class="flex-1 relative h-8 px-4">
+                                            <div class="absolute left-4 top-1 h-6 bg-green-500 rounded" style="width: 8%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Planning Phase -->
+                                    <div class="flex items-center">
+                                        <div class="w-48 text-sm font-semibold text-gray-900">Planning</div>
+                                        <div class="flex-1 relative h-8 px-4">
+                                            <div class="absolute top-1 h-6 bg-green-500 rounded" style="left: 12%; width: 15%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Execution Phase -->
+                                    <div class="flex items-center">
+                                        <div class="w-48 text-sm font-semibold text-gray-900">Execution</div>
+                                        <div class="flex-1 relative h-8 px-4">
+                                            <div class="absolute top-1 h-6 bg-blue-500 rounded" style="left: 27%; width: 45%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Design Task -->
+                                    <div class="flex items-center pl-4">
+                                        <div class="w-44 text-sm text-gray-600">UI/UX Design</div>
+                                        <div class="flex-1 relative h-6 px-4">
+                                            <div class="absolute top-0 h-4 bg-blue-400 rounded" style="left: 27%; width: 20%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Development Task -->
+                                    <div class="flex items-center pl-4">
+                                        <div class="w-44 text-sm text-gray-600">Development</div>
+                                        <div class="flex-1 relative h-6 px-4">
+                                            <div class="absolute top-0 h-4 bg-blue-400 rounded" style="left: 47%; width: 20%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Testing Task -->
+                                    <div class="flex items-center pl-4">
+                                        <div class="w-44 text-sm text-gray-600">Testing & QA</div>
+                                        <div class="flex-1 relative h-6 px-4">
+                                            <div class="absolute top-0 h-4 bg-blue-300 rounded" style="left: 67%; width: 5%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Monitoring Phase -->
+                                    <div class="flex items-center">
+                                        <div class="w-48 text-sm font-semibold text-gray-400">Monitoring</div>
+                                        <div class="flex-1 relative h-8 px-4">
+                                            <div class="absolute top-1 h-6 bg-gray-300 rounded" style="left: 72%; width: 15%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Closure Phase -->
+                                    <div class="flex items-center">
+                                        <div class="w-48 text-sm font-semibold text-gray-400">Closure</div>
+                                        <div class="flex-1 relative h-8 px-4">
+                                            <div class="absolute top-1 h-6 bg-gray-300 rounded" style="left: 87%; width: 8%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget vs Actual Spending -->
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Budget Overview</h3>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm text-gray-600">Total Budget</span>
+                                            <span class="text-sm font-semibold text-gray-900">$120,000</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm text-gray-600">Spent</span>
+                                            <span class="text-sm font-semibold text-gray-900">$85,000</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm text-gray-600">Remaining</span>
+                                            <span class="text-sm font-semibold text-green-600">$35,000</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-3 mt-4">
+                                            <div class="bg-blue-600 h-3 rounded-full" style="width: 71%"></div>
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-1">71% of budget used</div>
+                                    </div>
+
+                                    <div class="pt-4 border-t border-gray-300">
+                                        <div class="text-sm font-semibold text-gray-900 mb-3">Spending by Category</div>
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Personnel</span>
+                                                <span class="font-semibold text-gray-900">$45,000</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Software & Tools</span>
+                                                <span class="font-semibold text-gray-900">$18,000</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Infrastructure</span>
+                                                <span class="font-semibold text-gray-900">$12,000</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Consulting</span>
+                                                <span class="font-semibold text-gray-900">$10,000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Members List -->
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Team Members</h3>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="space-y-3">
+                                    <!-- Member 1 -->
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">JD</div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">John Doe</div>
+                                                <div class="text-xs text-gray-500">Project Manager</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">MOA</span>
+                                    </div>
+
+                                    <!-- Member 2 -->
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">AM</div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">Alice Murphy</div>
+                                                <div class="text-xs text-gray-500">UX Designer</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded">MOE</span>
+                                    </div>
+
+                                    <!-- Member 3 -->
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold">SK</div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">Sam Kim</div>
+                                                <div class="text-xs text-gray-500">Lead Developer</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded">MOE</span>
+                                    </div>
+
+                                    <!-- Member 4 -->
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-semibold">RJ</div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">Rachel Johnson</div>
+                                                <div class="text-xs text-gray-500">QA Engineer</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded">Sponsor</span>
+                                    </div>
+
+                                    <!-- Member 5 -->
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-semibold">LM</div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">Lisa Martinez</div>
+                                                <div class="text-xs text-gray-500">Content Strategist</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">MOA</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-white">
+                                    View All Members (8)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="col-span-2">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="space-y-4">
+                                    <!-- Activity 1 -->
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm text-gray-900"><strong>Sam Kim</strong> completed task "Homepage Design Review"</p>
+                                            <p class="text-xs text-gray-500">2 hours ago</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Activity 2 -->
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm text-gray-900"><strong>Alice Murphy</strong> commented on "Mobile Responsive Design"</p>
+                                            <p class="text-xs text-gray-500">5 hours ago</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Activity 3 -->
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm text-gray-900"><strong>John Doe</strong> created new task "Implement Contact Form"</p>
+                                            <p class="text-xs text-gray-500">Yesterday at 4:30 PM</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Activity 4 -->
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm text-gray-900"><strong>Rachel Johnson</strong> uploaded deliverable "Q3 Progress Report.pdf"</p>
+                                            <p class="text-xs text-gray-500">Yesterday at 2:15 PM</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Activity 5 -->
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm text-gray-900"><strong>System</strong> identified risk "Potential delay in third-party API integration"</p>
+                                            <p class="text-xs text-gray-500">2 days ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
