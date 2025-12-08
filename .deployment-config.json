@@ -1,0 +1,69 @@
+{
+  "environment": "production",
+  "server": {
+    "provider": "Contabo VPS",
+    "hostname": "vmi1399789.contaboserver.net",
+    "ip": "173.212.230.240",
+    "location": "Europe"
+  },
+  "application": {
+    "name": "MDF Access Platform",
+    "url": "https://projets.samsic.cloud",
+    "path": "/var/www/samsic/mdf-access",
+    "public_path": "/var/www/samsic/mdf-access/public"
+  },
+  "stack": {
+    "os": "Ubuntu 22.04.5 LTS",
+    "web_server": "nginx/1.18.0",
+    "php": "8.4.14",
+    "laravel": "^12.0",
+    "nodejs": "v21.6.1",
+    "npm": "10.4.0",
+    "composer": "2.8.12",
+    "database": {
+      "primary": "PostgreSQL 18.0",
+      "host": "127.0.0.1",
+      "port": "5432",
+      "name": "samsic_maroc"
+    },
+    "cache": {
+      "redis": "6.0.16",
+      "host": "127.0.0.1",
+      "port": "6379"
+    }
+  },
+  "resources": {
+    "cpu_cores": 4,
+    "ram_gb": 7.8,
+    "disk_gb": 391,
+    "disk_used_gb": 267,
+    "disk_available_gb": 105
+  },
+  "ssl": {
+    "provider": "Let's Encrypt",
+    "certbot_version": "1.21.0",
+    "auto_renewal": true
+  },
+  "deployment": {
+    "method": "manual",
+    "git_branch": "main",
+    "process_manager": "none",
+    "queue_worker": "database"
+  },
+  "monitoring": {
+    "logs_path": "/var/www/samsic/mdf-access/storage/logs",
+    "log_level": "warning",
+    "log_channel": "daily"
+  },
+  "maintenance": {
+    "last_updated": "2025-12-08",
+    "next_review": "2026-01-08"
+  },
+  "improvements_needed": [
+    "Install Supervisor for queue workers",
+    "Configure automated backups",
+    "Enable Redis caching",
+    "Resolve PHP extension warnings",
+    "Set up disk space monitoring"
+  ]
+}

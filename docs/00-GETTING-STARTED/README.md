@@ -43,6 +43,7 @@ This section will help you quickly understand and start working with the MDF Acc
 - 🧪 [Testing Guide](../06-DEVELOPMENT/Testing-Guide.md)
 
 ### For Administrators
+- 🌐 [Production Server Environment](../05-DEPLOYMENT/Production-Server-Environment.md)
 - 🚀 [Deployment Guide](../05-DEPLOYMENT/README.md)
 - 👥 [User Management](../04-WORKFLOWS/user-management/User-Creation.md)
 - 🔧 [Platform Operations](../07-OPERATIONS/Platform-Operations.md)
@@ -116,8 +117,9 @@ A single project can involve **multiple organizations** in different roles:
 
 - **Version:** 1.0
 - **Progression:** 42%
-- **Last Updated:** November 2025
+- **Last Updated:** December 2025
 - **Active Development:** ✅ Yes
+- **Production:** 🌐 https://projets.samsic.cloud
 
 See the [Current Roadmap](../09-PROJECT-HISTORY/roadmap/Current-Status.md) for detailed progress.
 

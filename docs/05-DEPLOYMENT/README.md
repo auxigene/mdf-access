@@ -6,11 +6,12 @@ Complete guide for deploying and configuring MDF Access in production environmen
 
 ## 📚 Table of Contents
 
-1. [Installation](./Installation.md) - Step-by-step installation guide
-2. [Configuration](./Configuration.md) - Environment and application configuration
-3. [Database Setup](./Database-Setup.md) - Database configuration and optimization
-4. [Environment Variables](./Environment-Variables.md) - Complete .env reference
-5. [Production Checklist](./Production-Checklist.md) - Pre-launch checklist
+1. [Production Server Environment](./Production-Server-Environment.md) - Current production server specifications
+2. [Installation](./Installation.md) - Step-by-step installation guide
+3. [Configuration](./Configuration.md) - Environment and application configuration
+4. [Database Setup](./Database-Setup.md) - Database configuration and optimization
+5. [Environment Variables](./Environment-Variables.md) - Complete .env reference
+6. [Production Checklist](./Production-Checklist.md) - Pre-launch checklist
 
 ---
 
@@ -348,5 +349,17 @@ volumes:
 
 ---
 
-**Last Updated:** November 2025
+## 🌐 Production Environment
+
+**Current Production Server:** Contabo VPS (vmi1399789.contaboserver.net)
+- **URL:** https://projets.samsic.cloud
+- **IP:** 173.212.230.240
+- **Specs:** 4 CPU cores, 7.8GB RAM, 391GB storage
+- **Stack:** Ubuntu 22.04, Nginx 1.18, PHP 8.4.14, PostgreSQL 18.0, Node.js 21.6.1
+
+For complete server specifications, see [Production-Server-Environment.md](./Production-Server-Environment.md)
+
+---
+
+**Last Updated:** December 2025
 **Deployment Method:** Manual / Docker / Laravel Forge compatible
